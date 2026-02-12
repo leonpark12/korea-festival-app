@@ -1,4 +1,4 @@
-import { Popup } from "react-map-gl/mapbox";
+import { Popup } from "react-map-gl/maplibre";
 import { useLocale, useTranslations } from "next-intl";
 import { CATEGORY_MAP } from "@/lib/categories";
 import type { POI } from "@/types/poi";

@@ -6,7 +6,7 @@ export const KOREA_CENTER: MapViewState = {
   zoom: 7,
 };
 
-export const MAP_STYLE = "mapbox://styles/mapbox/light-v11";
+export const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 
 export const CLUSTER_MAX_ZOOM = 14;
 export const CLUSTER_RADIUS = 50;

@@ -1,5 +1,17 @@
+"use client";
+
+import dynamic from "next/dynamic";
 import { CATEGORY_MAP } from "@/lib/categories";
 import type { POI } from "@/types/poi";
+
+const SpotMiniMap = dynamic(() => import("./SpotMiniMap"), {
+  ssr: false,
+  loading: () => (
+    <div className="flex h-full items-center justify-center bg-muted">
+      <span className="text-4xl">🗺️</span>
+    </div>
+  ),
+});
 
 interface SpotHeroProps {
   poi: POI;
@@ -8,27 +20,16 @@ interface SpotHeroProps {
 
 export default function SpotHero({ poi, locale }: SpotHeroProps) {
   const cat = CATEGORY_MAP[poi.category];
-  const mapboxToken = process.env.NEXT_PUBLIC_MAPBOX_TOKEN;
-  const staticMapUrl = `https://api.mapbox.com/styles/v1/mapbox/light-v11/static/pin-l-marker+${cat.color.replace("#", "")}(${poi.coordinates.lng},${poi.coordinates.lat})/${poi.coordinates.lng},${poi.coordinates.lat},13,0/800x300@2x?access_token=${mapboxToken}`;
 
   return (
     <div className="relative">
-      {/* Static map image */}
+      {/* Mini map */}
       <div className="h-48 w-full bg-muted sm:h-64 md:h-72">
-        {mapboxToken && mapboxToken !== "your_mapbox_token_here" ? (
-          <img
-            src={staticMapUrl}
-            alt={`Map of ${poi.name[locale]}`}
-            className="h-full w-full object-cover"
-            loading="eager"
-            decoding="async"
-            fetchPriority="high"
-          />
-        ) : (
-          <div className="flex h-full items-center justify-center bg-muted">
-            <span className="text-4xl">🗺️</span>
-          </div>
-        )}
+        <SpotMiniMap
+          lng={poi.coordinates.lng}
+          lat={poi.coordinates.lat}
+          color={cat.color}
+        />
       </div>
 
       {/* Overlay info */}

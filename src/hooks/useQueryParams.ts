@@ -1,7 +1,7 @@
 "use client";
 
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
-import { useCallback } from "react";
+import { useCallback, useRef } from "react";
 import type { FilterState } from "@/types/map";
 
 export function useQueryParams(): {
@@ -13,6 +13,11 @@ export function useQueryParams(): {
   const router = useRouter();
   const pathname = usePathname();
 
+  // searchParams를 ref에 저장하여 setFilter의 의존성에서 제거
+  // → searchParams 변경 시 setFilter 콜백이 재생성되지 않아 무한루프 방지
+  const searchParamsRef = useRef(searchParams);
+  searchParamsRef.current = searchParams;
+
   const filters: FilterState = {
     categories: searchParams.get("cat")?.split(",").filter(Boolean) ?? [],
     region: searchParams.get("region") ?? null,
@@ -22,7 +27,7 @@ export function useQueryParams(): {
 
   const setFilter = useCallback(
     (key: keyof FilterState, value: string | string[] | null) => {
-      const params = new URLSearchParams(searchParams.toString());
+      const params = new URLSearchParams(searchParamsRef.current.toString());
 
       if (value === null || (Array.isArray(value) && value.length === 0) || value === "") {
         if (key === "categories") params.delete("cat");
@@ -43,7 +48,7 @@ export function useQueryParams(): {
 
       router.replace(`${pathname}?${params.toString()}`, { scroll: false });
     },
-    [searchParams, router, pathname]
+    [router, pathname]
   );
 
   const clearFilters = useCallback(() => {

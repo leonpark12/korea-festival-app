@@ -1,4 +1,4 @@
-import type { LayerProps } from "react-map-gl/mapbox";
+import type { LayerProps } from "react-map-gl/maplibre";
 import { CATEGORY_COLORS } from "@/lib/categories";
 
 export const clusterLayer: LayerProps = {
@@ -30,7 +30,7 @@ export const clusterCountLayer: LayerProps = {
   layout: {
     "text-field": ["get", "point_count_abbreviated"],
     "text-size": 14,
-    "text-font": ["DIN Pro Medium", "Arial Unicode MS Bold"],
+    "text-font": ["Noto Sans Bold", "Noto Sans Regular"],
   },
   paint: {
     "text-color": "#333333",
@@ -48,7 +48,7 @@ export const unclusteredPointLayer: LayerProps = {
       ["get", "category"],
       ...CATEGORY_COLORS.flat(),
       "#888888",
-    ],
+    ] as unknown as string,
     "circle-radius": [
       "interpolate",
       ["linear"],
