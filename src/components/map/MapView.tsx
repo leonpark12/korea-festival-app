@@ -29,6 +29,7 @@ export default function MapView({
 }: MapViewProps) {
   const internalRef = useRef<MapRef>(null);
   const mapRef = externalRef ?? internalRef;
+  const zoomRef = useRef(viewState.zoom);
 
   const onClick = useCallback(
     (e: MapMouseEvent) => {
@@ -60,13 +61,13 @@ export default function MapView({
         if (geometry.type === "Point") {
           mapRef.current?.flyTo({
             center: geometry.coordinates as [number, number],
-            zoom: Math.max(viewState.zoom, 13),
+            zoom: Math.max(zoomRef.current, 13),
             duration: 500,
           });
         }
       }
     },
-    [onSelectPOI, viewState.zoom]
+    [onSelectPOI]
   );
 
   const onMouseEnter = useCallback(() => {
@@ -83,7 +84,10 @@ export default function MapView({
     <Map
       ref={mapRef}
       {...viewState}
-      onMove={(evt) => onViewStateChange(evt.viewState)}
+      onMove={(evt) => {
+        zoomRef.current = evt.viewState.zoom;
+        onViewStateChange(evt.viewState);
+      }}
       mapStyle={MAP_STYLE}
       interactiveLayerIds={["clusters", "unclustered-point"]}
       onClick={onClick}

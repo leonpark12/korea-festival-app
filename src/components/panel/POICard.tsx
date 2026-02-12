@@ -1,5 +1,6 @@
 "use client";
 
+import { memo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { CATEGORY_MAP } from "@/lib/categories";
 import type { POI } from "@/types/poi";
@@ -10,7 +11,7 @@ interface POICardProps {
   isSelected?: boolean;
 }
 
-export default function POICard({ poi, onSelect, isSelected }: POICardProps) {
+export default memo(function POICard({ poi, onSelect, isSelected }: POICardProps) {
   const locale = useLocale() as "ko" | "en";
   const t = useTranslations("poi");
   const cat = CATEGORY_MAP[poi.category];
@@ -46,4 +47,4 @@ export default function POICard({ poi, onSelect, isSelected }: POICardProps) {
       </p>
     </button>
   );
-}
+});
