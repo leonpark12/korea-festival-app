@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "Korea Travel Map",
+    "description": "Explore Korea's attractions, restaurants, accommodations, and shopping spots on the map"
+  },
+  "header": {
+    "title": "Korea Travel Map",
+    "locale": "English"
+  },
+  "map": {
+    "loading": "Loading map...",
+    "myLocation": "My Location",
+    "zoomIn": "Zoom In",
+    "zoomOut": "Zoom Out"
+  },
+  "search": {
+    "placeholder": "Search places...",
+    "noResults": "No results found",
+    "results": "{count} results"
+  },
+  "filter": {
+    "all": "All",
+    "category": "Category",
+    "region": "Region",
+    "clear": "Clear filters"
+  },
+  "categories": {
+    "attraction": "Attractions",
+    "restaurant": "Restaurants",
+    "accommodation": "Accommodation",
+    "shopping": "Shopping",
+    "festival": "Festivals",
+    "culture": "Culture",
+    "nature": "Nature",
+    "leisure": "Leisure"
+  },
+  "poi": {
+    "address": "Address",
+    "contact": "Contact",
+    "website": "Website",
+    "description": "About",
+    "nearby": "Nearby Places",
+    "viewDetail": "View Details",
+    "openInMaps": "Open in Maps",
+    "back": "Back"
+  },
+  "spot": {
+    "nearbyTitle": "Nearby Recommended Spots",
+    "noDescription": "Description is not yet available."
+  },
+  "common": {
+    "close": "Close",
+    "loading": "Loading...",
+    "error": "An error occurred"
+  }
+}

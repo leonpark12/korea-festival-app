@@ -1,0 +1,305 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9882, 37.5512] },
+      "properties": {
+        "id": "poi-001",
+        "slug": "namsan-seoul-tower",
+        "category": "attraction",
+        "name_ko": "남산서울타워",
+        "name_en": "Namsan Seoul Tower",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9770, 37.5796] },
+      "properties": {
+        "id": "poi-002",
+        "slug": "gyeongbokgung-palace",
+        "category": "culture",
+        "name_ko": "경복궁",
+        "name_en": "Gyeongbokgung Palace",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9869, 37.5636] },
+      "properties": {
+        "id": "poi-003",
+        "slug": "myeongdong",
+        "category": "shopping",
+        "name_ko": "명동",
+        "name_en": "Myeongdong",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9994, 37.5700] },
+      "properties": {
+        "id": "poi-004",
+        "slug": "gwangjang-market",
+        "category": "restaurant",
+        "name_ko": "광장시장",
+        "name_en": "Gwangjang Market",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [129.1604, 35.1587] },
+      "properties": {
+        "id": "poi-005",
+        "slug": "haeundae-beach",
+        "category": "nature",
+        "name_ko": "해운대 해수욕장",
+        "name_en": "Haeundae Beach",
+        "region": "busan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [129.0108, 35.0975] },
+      "properties": {
+        "id": "poi-006",
+        "slug": "gamcheon-culture-village",
+        "category": "attraction",
+        "name_ko": "감천문화마을",
+        "name_en": "Gamcheon Culture Village",
+        "region": "busan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [129.0308, 35.0969] },
+      "properties": {
+        "id": "poi-007",
+        "slug": "jagalchi-fish-market",
+        "category": "restaurant",
+        "name_ko": "자갈치시장",
+        "name_en": "Jagalchi Fish Market",
+        "region": "busan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [129.3322, 35.7900] },
+      "properties": {
+        "id": "poi-008",
+        "slug": "bulguksa-temple",
+        "category": "culture",
+        "name_ko": "불국사",
+        "name_en": "Bulguksa Temple",
+        "region": "gyeongbuk"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.5292, 33.3617] },
+      "properties": {
+        "id": "poi-009",
+        "slug": "hallasan-mountain",
+        "category": "nature",
+        "name_ko": "한라산",
+        "name_en": "Hallasan Mountain",
+        "region": "jeju"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9425, 33.4592] },
+      "properties": {
+        "id": "poi-010",
+        "slug": "seongsan-ilchulbong",
+        "category": "nature",
+        "name_ko": "성산일출봉",
+        "name_en": "Seongsan Ilchulbong",
+        "region": "jeju"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [127.0095, 37.5673] },
+      "properties": {
+        "id": "poi-011",
+        "slug": "dongdaemun-design-plaza",
+        "category": "culture",
+        "name_ko": "동대문디자인플라자",
+        "name_en": "Dongdaemun Design Plaza (DDP)",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9831, 37.5826] },
+      "properties": {
+        "id": "poi-012",
+        "slug": "bukchon-hanok-village",
+        "category": "attraction",
+        "name_ko": "북촌한옥마을",
+        "name_en": "Bukchon Hanok Village",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9856, 37.5742] },
+      "properties": {
+        "id": "poi-013",
+        "slug": "insadong",
+        "category": "shopping",
+        "name_ko": "인사동",
+        "name_en": "Insadong",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [127.2023, 37.2942] },
+      "properties": {
+        "id": "poi-014",
+        "slug": "everland",
+        "category": "leisure",
+        "name_ko": "에버랜드",
+        "name_en": "Everland",
+        "region": "gyeonggi"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.5268, 33.5121] },
+      "properties": {
+        "id": "poi-015",
+        "slug": "jeju-olle-market",
+        "category": "restaurant",
+        "name_ko": "제주 올레시장",
+        "name_en": "Jeju Olle Market",
+        "region": "jeju"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [127.1530, 35.8153] },
+      "properties": {
+        "id": "poi-016",
+        "slug": "jeonju-hanok-village",
+        "category": "attraction",
+        "name_ko": "전주한옥마을",
+        "name_en": "Jeonju Hanok Village",
+        "region": "jeonbuk"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [128.4656, 38.1194] },
+      "properties": {
+        "id": "poi-017",
+        "slug": "seoraksan",
+        "category": "nature",
+        "name_ko": "설악산",
+        "name_en": "Seoraksan Mountain",
+        "region": "gangwon"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [129.0853, 35.0519] },
+      "properties": {
+        "id": "poi-018",
+        "slug": "taejongdae",
+        "category": "nature",
+        "name_ko": "태종대",
+        "name_en": "Taejongdae",
+        "region": "busan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [127.5259, 37.7909] },
+      "properties": {
+        "id": "poi-019",
+        "slug": "nami-island",
+        "category": "attraction",
+        "name_ko": "남이섬",
+        "name_en": "Nami Island",
+        "region": "gangwon"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9946, 37.5345] },
+      "properties": {
+        "id": "poi-020",
+        "slug": "itaewon",
+        "category": "shopping",
+        "name_ko": "이태원",
+        "name_en": "Itaewon",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [127.0981, 37.5112] },
+      "properties": {
+        "id": "poi-021",
+        "slug": "lotte-world",
+        "category": "leisure",
+        "name_ko": "롯데월드",
+        "name_en": "Lotte World",
+        "region": "seoul"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [127.0800, 34.7713] },
+      "properties": {
+        "id": "poi-022",
+        "slug": "boseong-green-tea-fields",
+        "category": "nature",
+        "name_ko": "보성녹차밭",
+        "name_en": "Boseong Green Tea Fields",
+        "region": "jeonnam"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [128.5186, 36.5394] },
+      "properties": {
+        "id": "poi-023",
+        "slug": "andong-hahoe-village",
+        "category": "culture",
+        "name_ko": "안동하회마을",
+        "name_en": "Andong Hahoe Village",
+        "region": "gyeongbuk"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [129.1637, 35.1630] },
+      "properties": {
+        "id": "poi-024",
+        "slug": "shilla-stay-haeundae",
+        "category": "accommodation",
+        "name_ko": "신라스테이 해운대",
+        "name_en": "Shilla Stay Haeundae",
+        "region": "busan"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [126.9810, 37.5656] },
+      "properties": {
+        "id": "poi-025",
+        "slug": "lotte-hotel-seoul",
+        "category": "accommodation",
+        "name_ko": "롯데호텔 서울",
+        "name_en": "Lotte Hotel Seoul",
+        "region": "seoul"
+      }
+    }
+  ]
+}

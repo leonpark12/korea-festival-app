@@ -1,0 +1,19 @@
+[
+  { "code": "seoul", "name": { "ko": "서울", "en": "Seoul" } },
+  { "code": "busan", "name": { "ko": "부산", "en": "Busan" } },
+  { "code": "daegu", "name": { "ko": "대구", "en": "Daegu" } },
+  { "code": "incheon", "name": { "ko": "인천", "en": "Incheon" } },
+  { "code": "gwangju", "name": { "ko": "광주", "en": "Gwangju" } },
+  { "code": "daejeon", "name": { "ko": "대전", "en": "Daejeon" } },
+  { "code": "ulsan", "name": { "ko": "울산", "en": "Ulsan" } },
+  { "code": "sejong", "name": { "ko": "세종", "en": "Sejong" } },
+  { "code": "gyeonggi", "name": { "ko": "경기", "en": "Gyeonggi" } },
+  { "code": "gangwon", "name": { "ko": "강원", "en": "Gangwon" } },
+  { "code": "chungbuk", "name": { "ko": "충북", "en": "Chungbuk" } },
+  { "code": "chungnam", "name": { "ko": "충남", "en": "Chungnam" } },
+  { "code": "jeonbuk", "name": { "ko": "전북", "en": "Jeonbuk" } },
+  { "code": "jeonnam", "name": { "ko": "전남", "en": "Jeonnam" } },
+  { "code": "gyeongbuk", "name": { "ko": "경북", "en": "Gyeongbuk" } },
+  { "code": "gyeongnam", "name": { "ko": "경남", "en": "Gyeongnam" } },
+  { "code": "jeju", "name": { "ko": "제주", "en": "Jeju" } }
+]
