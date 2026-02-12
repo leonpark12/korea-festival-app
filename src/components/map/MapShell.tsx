@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useCallback, useRef, Suspense } from "react";
+import { useState, useCallback, useMemo, useRef, Suspense } from "react";
 import MapView from "./MapView";
 import SidePanel from "../panel/SidePanel";
 import BottomSheet from "../panel/BottomSheet";
@@ -24,6 +24,7 @@ function MapShellInner() {
   const { filters, setFilter } = useQueryParams();
   const isDesktop = useIsDesktop();
   const mapRef = useRef<MapRef>(null);
+  const zoomRef = useRef(KOREA_CENTER.zoom);
 
   const [viewState, setViewState] = useState<MapViewState>(KOREA_CENTER);
   const [searchResults, setSearchResults] = useState<POI[]>([]);
@@ -32,8 +33,10 @@ function MapShellInner() {
   const filteredPOIs = useFilteredPOIs(allPois, filters);
   const { search } = usePOISearch(allPois);
 
-  const selectedPOI =
-    allPois.find((p) => p.slug === filters.selectedPOI) ?? null;
+  const selectedPOI = useMemo(
+    () => allPois.find((p) => p.slug === filters.selectedPOI) ?? null,
+    [filters.selectedPOI]
+  );
 
   const handleSearch = useCallback(
     (query: string) => {
@@ -52,13 +55,13 @@ function MapShellInner() {
         if (poi) {
           mapRef.current?.flyTo({
             center: [poi.coordinates.lng, poi.coordinates.lat],
-            zoom: Math.max(viewState.zoom, 13),
+            zoom: Math.max(zoomRef.current, 13),
             duration: 500,
           });
         }
       }
     },
-    [setFilter, viewState.zoom]
+    [setFilter]
   );
 
   const handleToggleCategory = useCallback(
@@ -79,6 +82,11 @@ function MapShellInner() {
     [setFilter]
   );
 
+  const handlePanelSelectPOI = useCallback(
+    (slug: string) => handleSelectPOI(slug),
+    [handleSelectPOI]
+  );
+
   return (
     <div className="relative h-screen w-full">
       <Header />
@@ -91,7 +99,10 @@ function MapShellInner() {
         <MapView
           data={filteredGeoJSON}
           viewState={viewState}
-          onViewStateChange={setViewState}
+          onViewStateChange={(vs) => {
+            zoomRef.current = vs.zoom;
+            setViewState(vs);
+          }}
           selectedPOI={selectedPOI}
           onSelectPOI={handleSelectPOI}
           mapRef={mapRef}
@@ -109,7 +120,7 @@ function MapShellInner() {
           onSearch={handleSearch}
           onToggleCategory={handleToggleCategory}
           onSelectRegion={handleSelectRegion}
-          onSelectPOI={(slug) => handleSelectPOI(slug)}
+          onSelectPOI={handlePanelSelectPOI}
         />
       ) : (
         <BottomSheet
@@ -121,7 +132,7 @@ function MapShellInner() {
           onSearch={handleSearch}
           onToggleCategory={handleToggleCategory}
           onSelectRegion={handleSelectRegion}
-          onSelectPOI={(slug) => handleSelectPOI(slug)}
+          onSelectPOI={handlePanelSelectPOI}
         />
       )}
     </div>

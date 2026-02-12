@@ -1,3 +1,4 @@
+import { memo } from "react";
 import { Source, Layer } from "react-map-gl/maplibre";
 import {
   clusterLayer,
@@ -11,7 +12,7 @@ interface ClusterSourceProps {
   data: POIGeoJSON;
 }
 
-export default function ClusterSource({ data }: ClusterSourceProps) {
+export default memo(function ClusterSource({ data }: ClusterSourceProps) {
   return (
     <Source
       id="pois"
@@ -26,4 +27,4 @@ export default function ClusterSource({ data }: ClusterSourceProps) {
       <Layer {...unclusteredPointLayer} />
     </Source>
   );
-}
+});

@@ -79,6 +79,14 @@ export default function BottomSheet({
     [snap]
   );
 
+  const handleSelectAndClose = useCallback(
+    (slug: string) => {
+      onSelectPOI(slug);
+      setSnap("peek");
+    },
+    [onSelectPOI]
+  );
+
   return (
     <div
       ref={sheetRef}
@@ -132,18 +140,12 @@ export default function BottomSheet({
             <SearchBar
               onSearch={onSearch}
               searchResults={searchResults}
-              onSelect={(slug) => {
-                onSelectPOI(slug);
-                setSnap("peek");
-              }}
+              onSelect={handleSelectAndClose}
             />
             <POICardList
               pois={pois}
               selectedSlug={selectedSlug}
-              onSelect={(slug) => {
-                onSelectPOI(slug);
-                setSnap("peek");
-              }}
+              onSelect={handleSelectAndClose}
             />
           </>
         )}
