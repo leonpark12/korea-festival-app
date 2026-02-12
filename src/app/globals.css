@@ -1,0 +1,71 @@
+@import "tailwindcss";
+@import "mapbox-gl/dist/mapbox-gl.css";
+
+@theme inline {
+  --color-background: #ffffff;
+  --color-foreground: #171717;
+  --color-muted: #f5f5f5;
+  --color-muted-foreground: #737373;
+  --color-border: #e5e5e5;
+  --color-primary: #2563eb;
+  --color-primary-foreground: #ffffff;
+
+  --color-cat-attraction: #FF6B6B;
+  --color-cat-restaurant: #FFA94D;
+  --color-cat-accommodation: #69DB7C;
+  --color-cat-shopping: #9775FA;
+  --color-cat-festival: #FF8787;
+  --color-cat-culture: #748FFC;
+  --color-cat-nature: #38D9A9;
+  --color-cat-leisure: #F783AC;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+}
+
+.mapboxgl-popup-content {
+  padding: 0 !important;
+  border-radius: 12px !important;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15) !important;
+  overflow: hidden;
+}
+
+.mapboxgl-popup-close-button {
+  font-size: 18px;
+  padding: 4px 8px;
+  color: #666;
+  z-index: 1;
+}
+
+.mapboxgl-popup-close-button:hover {
+  color: #333;
+  background: rgba(0, 0, 0, 0.05);
+}
+
+.mapboxgl-ctrl-group {
+  border-radius: 8px !important;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1) !important;
+}
+
+.bottom-sheet-overlay {
+  touch-action: none;
+}
+
+.scroll-hidden::-webkit-scrollbar,
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+.scroll-hidden,
+.scrollbar-hide {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

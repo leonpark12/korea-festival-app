@@ -1,0 +1,56 @@
+{
+  "meta": {
+    "title": "한국 관광 지도",
+    "description": "지도에서 한국의 관광지, 맛집, 숙박, 쇼핑 명소를 탐색하세요"
+  },
+  "header": {
+    "title": "Korea Travel Map",
+    "locale": "한국어"
+  },
+  "map": {
+    "loading": "지도를 불러오는 중...",
+    "myLocation": "내 위치",
+    "zoomIn": "확대",
+    "zoomOut": "축소"
+  },
+  "search": {
+    "placeholder": "장소를 검색하세요...",
+    "noResults": "검색 결과가 없습니다",
+    "results": "{count}개의 결과"
+  },
+  "filter": {
+    "all": "전체",
+    "category": "카테고리",
+    "region": "지역",
+    "clear": "필터 초기화"
+  },
+  "categories": {
+    "attraction": "관광지",
+    "restaurant": "맛집",
+    "accommodation": "숙박",
+    "shopping": "쇼핑",
+    "festival": "축제",
+    "culture": "문화",
+    "nature": "자연",
+    "leisure": "레저"
+  },
+  "poi": {
+    "address": "주소",
+    "contact": "연락처",
+    "website": "웹사이트",
+    "description": "소개",
+    "nearby": "주변 관광지",
+    "viewDetail": "상세보기",
+    "openInMaps": "지도 앱으로 열기",
+    "back": "돌아가기"
+  },
+  "spot": {
+    "nearbyTitle": "주변 추천 명소",
+    "noDescription": "설명이 아직 준비되지 않았습니다."
+  },
+  "common": {
+    "close": "닫기",
+    "loading": "로딩 중...",
+    "error": "오류가 발생했습니다"
+  }
+}
