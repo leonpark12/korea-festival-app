@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useCallback, useRef, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
 import MapView from "./MapView";
 import SidePanel from "../panel/SidePanel";
 import BottomSheet from "../panel/BottomSheet";
@@ -13,7 +12,7 @@ import { useIsDesktop } from "@/hooks/useMediaQuery";
 import { KOREA_CENTER } from "@/lib/constants";
 import type { MapViewState } from "@/types/map";
 import type { POI, POIGeoJSON } from "@/types/poi";
-import type { MapRef } from "react-map-gl/mapbox";
+import type { MapRef } from "react-map-gl/maplibre";
 
 import poisJson from "@/data/pois.json";
 import geojsonData from "@/data/pois.geo.json";

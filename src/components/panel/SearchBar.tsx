@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { Command } from "cmdk";
 import { useLocale, useTranslations } from "next-intl";
 import { CATEGORY_MAP } from "@/lib/categories";
@@ -29,9 +29,13 @@ export default function SearchBar({
   const open = controlledOpen ?? isOpen;
   const setOpen = onOpenChange ?? setIsOpen;
 
+  // onSearch를 ref로 저장하여 useEffect 의존성에서 제거 → 무한루프 방지
+  const onSearchRef = useRef(onSearch);
+  onSearchRef.current = onSearch;
+
   useEffect(() => {
-    onSearch(query);
-  }, [query, onSearch]);
+    onSearchRef.current(query);
+  }, [query]);
 
   return (
     <div className="relative">

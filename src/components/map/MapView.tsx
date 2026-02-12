@@ -1,7 +1,8 @@
 "use client";
 
 import { useRef, useCallback, type RefObject } from "react";
-import Map, { type MapRef, type MapMouseEvent } from "react-map-gl/mapbox";
+import Map, { type MapRef, type MapMouseEvent } from "react-map-gl/maplibre";
+import type maplibregl from "maplibre-gl";
 import ClusterSource from "./ClusterSource";
 import MapControls from "./MapControls";
 import POIPopup from "./POIPopup";
@@ -40,11 +41,10 @@ export default function MapView({
       if (feature.properties?.cluster) {
         const map = mapRef.current?.getMap();
         if (!map) return;
-        const source = map.getSource("pois") as mapboxgl.GeoJSONSource;
+        const source = map.getSource("pois") as maplibregl.GeoJSONSource;
         const clusterId = feature.properties.cluster_id;
 
-        source.getClusterExpansionZoom(clusterId, (err, zoom) => {
-          if (err || zoom == null) return;
+        source.getClusterExpansionZoom(clusterId).then((zoom) => {
           const geometry = feature.geometry;
           if (geometry.type !== "Point") return;
 
@@ -85,7 +85,6 @@ export default function MapView({
       {...viewState}
       onMove={(evt) => onViewStateChange(evt.viewState)}
       mapStyle={MAP_STYLE}
-      mapboxAccessToken={process.env.NEXT_PUBLIC_MAPBOX_TOKEN}
       interactiveLayerIds={["clusters", "unclustered-point"]}
       onClick={onClick}
       onMouseEnter={onMouseEnter}

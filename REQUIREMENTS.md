@@ -39,7 +39,7 @@
 | **React** | UI 라이브러리 |
 | **Tailwind CSS** | 스타일링 |
 | **TypeScript** | 타입 안전성 |
-| **Mapbox GL JS** | 지도 엔진 (OpenStreetMap 기반) |
+| **MapLibre GL JS** | 지도 엔진 (OpenStreetMap 기반, OpenFreeMap 타일) |
 
 ### 3.2 데이터
 | 기술 | 용도 |
@@ -60,7 +60,7 @@
 ### 4.1 MVP (1차 릴리스) - 한국 지도 + 기본 POI
 
 #### 4.1.1 지도 기능
-- [ ] Mapbox GL JS 기반 한국 전체 지도 표시
+- [ ] MapLibre GL JS 기반 한국 전체 지도 표시
 - [ ] 카테고리별 마커/핀 표시 (관광지, 맛집, 숙박, 쇼핑 등)
 - [ ] 마커 클러스터링 (줌 레벨에 따른 자동 그룹화)
 - [ ] 마커 클릭 시 팝업/사이드 패널에 상세 정보 표시
@@ -227,7 +227,7 @@ type Category =
 │  헤더: 로고 | 검색바 | 언어 전환 (KO/EN)           │
 ├──────────────┬───────────────────────────────────┤
 │  사이드 패널  │                                   │
-│  ┌─────────┐ │         지도 (Mapbox)              │
+│  ┌─────────┐ │         지도 (MapLibre)              │
 │  │ 필터     │ │         - 마커/클러스터             │
 │  │ 카테고리  │ │         - 팝업                    │
 │  │ 지역     │ │         - 줌 컨트롤               │
@@ -248,7 +248,7 @@ type Category =
 │ 헤더: 로고 | 🔍 | KO │
 ├─────────────────────┤
 │                     │
-│    지도 (Mapbox)     │
+│    지도 (MapLibre)     │
 │    전체 화면         │
 │                     │
 │                     │
@@ -269,7 +269,7 @@ type Category =
 - **참고**: Airbnb Map, Google Maps, Tripadvisor
 - **컬러**: 밝은 베이스 + 카테고리별 포인트 컬러
 - **폰트**: Pretendard(한글) + Inter(영문) 또는 유사 시스템 폰트
-- **지도 스타일**: Mapbox Light 또는 커스텀 밝은 테마
+- **지도 스타일**: OpenFreeMap Positron (밝은 테마)
 
 ---
 
@@ -311,7 +311,7 @@ korea-festival-app/
 
 ### Phase 1: MVP (핵심 기능)
 1. 프로젝트 초기 설정 (Next.js + Tailwind + TypeScript)
-2. Mapbox 지도 통합 및 기본 표시
+2. MapLibre GL JS 지도 통합 및 기본 표시
 3. 샘플 데이터 기반 마커/클러스터링 구현
 4. 카테고리 필터 + 검색 기능
 5. 반응형 레이아웃 (PC/Tablet/Mobile)
@@ -335,12 +335,12 @@ korea-festival-app/
 
 ## 11. 열린 질문 / 추후 결정 사항
 
-- [ ] Mapbox 무료 티어로 충분한지 트래픽 예측 필요 (월 50K 맵 로드 무료)
+- [x] ~~Mapbox 무료 티어~~ → MapLibre GL JS + OpenFreeMap으로 전환 완료 (완전 무료, API 키 불필요)
 - [ ] 관광공사 데이터의 이미지 라이선스/사용 범위 확인
 - [ ] 데이터 갱신 주기 결정 (월 1회? 분기 1회?)
 - [ ] 아시아 확장 시 데이터 소스 확보 방안
 - [ ] 모바일 앱 전환 시점 및 기술 선택 (React Native vs PWA)
-- [ ] 커스텀 Mapbox 스타일 필요 여부
+- [x] ~~커스텀 Mapbox 스타일~~ → OpenFreeMap Positron 스타일 사용 중
 
 ---
 
