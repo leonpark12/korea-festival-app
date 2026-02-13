@@ -1,30 +1,20 @@
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
-import { routing } from "@/i18n/routing";
-import { getAllSlugs, getPOIBySlug, getNearbyPOIs } from "@/lib/data-loader";
+import { getPOIBySlug, getNearbyPOIs } from "@/lib/data-loader";
 import SpotHero from "@/components/spot/SpotHero";
 import SpotInfo from "@/components/spot/SpotInfo";
 import SpotJsonLd from "@/components/spot/SpotJsonLd";
 import NearbySpots from "@/components/spot/NearbySpots";
 import { Link } from "@/i18n/navigation";
 
+// ISR: 상세 페이지를 빌드 타임에 생성하지 않고, 첫 방문 시 생성 후 24시간 캐시
+export const dynamicParams = true;
+export const revalidate = 86400; // 24h
+
 type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
-
-export function generateStaticParams() {
-  const params: { locale: string; slug: string }[] = [];
-
-  for (const locale of routing.locales) {
-    const slugs = getAllSlugs(locale);
-    for (const slug of slugs) {
-      params.push({ locale, slug });
-    }
-  }
-
-  return params;
-}
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
