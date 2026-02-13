@@ -52,15 +52,16 @@ export default async function SpotPage({ params }: Props) {
   );
 
   return (
-    <div className="min-h-screen bg-white">
+    <div className="h-screen overflow-y-auto overscroll-y-contain bg-white">
       <SpotJsonLd poi={poi} />
 
-      {/* Back button */}
-      <div className="absolute top-4 left-4 z-10">
-        <BackButton />
+      <div className="relative">
+        {/* Back button */}
+        <div className="absolute top-4 left-4 z-10">
+          <BackButton />
+        </div>
+        <SpotHero poi={poi} locale={loc} />
       </div>
-
-      <SpotHero poi={poi} locale={loc} />
       <SpotInfo poi={poi} />
       <NearbySpots pois={nearby} locale={loc} />
     </div>
