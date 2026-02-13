@@ -12,7 +12,7 @@ import { useQueryParams } from "@/hooks/useQueryParams";
 import { usePOISearch } from "@/hooks/usePOISearch";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
 import { KOREA_CENTER } from "@/lib/constants";
-import type { MapViewState } from "@/types/map";
+import type { MapViewState, UserLocation } from "@/types/map";
 import type { POI, POIGeoJSON } from "@/types/poi";
 import type { MapRef } from "react-map-gl/maplibre";
 
@@ -31,6 +31,7 @@ function MapShellInner() {
   const [viewState, setViewState] = useState<MapViewState>(KOREA_CENTER);
   const [searchResults, setSearchResults] = useState<POI[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
 
   const filteredGeoJSON = useFilteredGeoJSON(geojson, filters);
   const filteredPOIs = useFilteredPOIs(allPois, filters);
@@ -121,7 +122,10 @@ function MapShellInner() {
 
   return (
     <div className="relative h-screen w-full">
-      <Header />
+      <Header
+        onOpenFilter={isDesktop ? undefined : () => setIsFilterOpen(true)}
+        activeFilterCount={activeFilterCount}
+      />
 
       {/* Map */}
       <div
@@ -139,6 +143,7 @@ function MapShellInner() {
           onSelectPOI={handleSelectPOI}
           mapRef={mapRef}
           isDesktop={isDesktop}
+          userLocation={userLocation}
         />
       </div>
 
@@ -158,23 +163,13 @@ function MapShellInner() {
       ) : (
         <>
           <BottomSheet
-            pois={filteredPOIs}
-            selectedSlug={filters.selectedPOI}
-            selectedCategories={filters.categories}
-            selectedRegion={filters.region}
-            searchResults={searchResults}
             selectedPOI={selectedPOI}
-            onSearch={handleSearch}
-            onToggleCategory={handleToggleCategory}
-            onSelectRegion={handleSelectRegion}
-            onSelectPOI={handlePanelSelectPOI}
             onDeselectPOI={() => handleSelectPOI(null)}
-            onOpenFilter={() => setIsFilterOpen(true)}
-            activeFilterCount={activeFilterCount}
           />
           <GeolocateFAB
             mapRef={mapRef}
             bottomOffset={selectedPOI ? 220 : 140}
+            onLocationFound={setUserLocation}
           />
           <FilterDrawer
             isOpen={isFilterOpen}
@@ -184,6 +179,11 @@ function MapShellInner() {
             onToggleCategory={handleToggleCategory}
             onSelectRegion={handleSelectRegion}
             onClearFilters={clearFilters}
+            pois={filteredPOIs}
+            selectedSlug={filters.selectedPOI}
+            searchResults={searchResults}
+            onSearch={handleSearch}
+            onSelectPOI={handlePanelSelectPOI}
           />
         </>
       )}

@@ -3,17 +3,20 @@
 import { useState, useCallback, type RefObject } from "react";
 import { useTranslations } from "next-intl";
 import type { MapRef } from "react-map-gl/maplibre";
+import type { UserLocation } from "@/types/map";
 
 type FABState = "idle" | "loading" | "error";
 
 interface GeolocateFABProps {
   mapRef: RefObject<MapRef | null>;
   bottomOffset?: number;
+  onLocationFound?: (loc: UserLocation) => void;
 }
 
 export default function GeolocateFAB({
   mapRef,
   bottomOffset = 140,
+  onLocationFound,
 }: GeolocateFABProps) {
   const t = useTranslations("map");
   const [state, setState] = useState<FABState>("idle");
@@ -29,11 +32,13 @@ export default function GeolocateFAB({
     setState("loading");
     navigator.geolocation.getCurrentPosition(
       (pos) => {
+        const { longitude, latitude, accuracy } = pos.coords;
         mapRef.current?.flyTo({
-          center: [pos.coords.longitude, pos.coords.latitude],
+          center: [longitude, latitude],
           zoom: 14,
           duration: 800,
         });
+        onLocationFound?.({ longitude, latitude, accuracy });
         setState("idle");
       },
       () => {

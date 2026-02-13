@@ -6,8 +6,9 @@ import type maplibregl from "maplibre-gl";
 import ClusterSource from "./ClusterSource";
 import MapControls from "./MapControls";
 import POIPopup from "./POIPopup";
+import UserLocationMarker from "./UserLocationMarker";
 import { KOREA_CENTER, MAP_STYLE } from "@/lib/constants";
-import type { MapViewState } from "@/types/map";
+import type { MapViewState, UserLocation } from "@/types/map";
 import type { POIGeoJSON, POI } from "@/types/poi";
 
 interface MapViewProps {
@@ -18,6 +19,7 @@ interface MapViewProps {
   onSelectPOI: (slug: string | null) => void;
   mapRef?: RefObject<MapRef | null>;
   isDesktop?: boolean;
+  userLocation?: UserLocation | null;
 }
 
 export default function MapView({
@@ -28,6 +30,7 @@ export default function MapView({
   onSelectPOI,
   mapRef: externalRef,
   isDesktop = true,
+  userLocation,
 }: MapViewProps) {
   const internalRef = useRef<MapRef>(null);
   const mapRef = externalRef ?? internalRef;
@@ -104,6 +107,7 @@ export default function MapView({
     >
       <ClusterSource data={data} />
       <MapControls showGeolocate={isDesktop} />
+      {userLocation && <UserLocationMarker location={userLocation} />}
       {isDesktop && selectedPOI && (
         <POIPopup poi={selectedPOI} onClose={() => onSelectPOI(null)} />
       )}

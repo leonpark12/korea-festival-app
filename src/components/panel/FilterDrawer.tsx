@@ -3,6 +3,9 @@
 import { useEffect, useCallback } from "react";
 import { useTranslations } from "next-intl";
 import FilterChips from "./FilterChips";
+import SearchBar from "./SearchBar";
+import POICardList from "./POICardList";
+import type { POI } from "@/types/poi";
 
 interface FilterDrawerProps {
   isOpen: boolean;
@@ -12,6 +15,11 @@ interface FilterDrawerProps {
   onToggleCategory: (cat: string) => void;
   onSelectRegion: (region: string | null) => void;
   onClearFilters: () => void;
+  pois?: POI[];
+  selectedSlug?: string | null;
+  searchResults?: POI[];
+  onSearch?: (query: string) => void;
+  onSelectPOI?: (slug: string) => void;
 }
 
 export default function FilterDrawer({
@@ -22,6 +30,11 @@ export default function FilterDrawer({
   onToggleCategory,
   onSelectRegion,
   onClearFilters,
+  pois,
+  selectedSlug,
+  searchResults,
+  onSearch,
+  onSelectPOI,
 }: FilterDrawerProps) {
   const t = useTranslations("filter");
 
@@ -40,6 +53,14 @@ export default function FilterDrawer({
   }, [isOpen, handleKeyDown]);
 
   const hasFilters = selectedCategories.length > 0 || selectedRegion !== null;
+
+  const handleSelectAndClose = useCallback(
+    (slug: string) => {
+      onSelectPOI?.(slug);
+      onClose();
+    },
+    [onSelectPOI, onClose]
+  );
 
   return (
     <>
@@ -84,6 +105,14 @@ export default function FilterDrawer({
             </button>
           </div>
 
+          {onSearch && searchResults && (
+            <SearchBar
+              onSearch={onSearch}
+              searchResults={searchResults}
+              onSelect={handleSelectAndClose}
+            />
+          )}
+
           <FilterChips
             selectedCategories={selectedCategories}
             selectedRegion={selectedRegion}
@@ -99,6 +128,14 @@ export default function FilterDrawer({
             >
               {t("clear")}
             </button>
+          )}
+
+          {pois && onSelectPOI && (
+            <POICardList
+              pois={pois}
+              selectedSlug={selectedSlug ?? null}
+              onSelect={handleSelectAndClose}
+            />
           )}
         </div>
       </div>
