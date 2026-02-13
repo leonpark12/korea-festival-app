@@ -61,3 +61,26 @@ export const unclusteredPointLayer: LayerProps = {
     "circle-stroke-color": "#ffffff",
   },
 };
+
+export const poiLabelLayer: LayerProps = {
+  id: "poi-label",
+  type: "symbol",
+  source: "pois",
+  minzoom: 14,
+  filter: ["!", ["has", "point_count"]],
+  layout: {
+    "text-field": ["get", "name"],
+    "text-font": ["Noto Sans Regular"],
+    "text-size": ["interpolate", ["linear"], ["zoom"], 14, 11, 18, 14],
+    "text-anchor": "bottom",
+    "text-offset": [0, -1.2],
+    "text-max-width": 8,
+    "text-allow-overlap": false,
+    "text-optional": true,
+  },
+  paint: {
+    "text-color": "#333333",
+    "text-halo-color": "#ffffff",
+    "text-halo-width": 1.5,
+  },
+};

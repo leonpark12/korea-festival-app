@@ -49,18 +49,30 @@ const geojsonByLocale: Record<string, unknown> = {
   en: geojsonEn,
 };
 
+const poisCache = new Map<string, POI[]>();
+const geojsonCache = new Map<string, POIGeoJSON>();
+const slugIndexCache = new Map<string, Map<string, POI>>();
+
 function mapPOIs(locale: string): POI[] {
+  let cached = poisCache.get(locale);
+  if (cached) return cached;
+
   const raw = poisByLocale[locale] ?? poisByLocale.ko;
-  return raw.map((poi) => ({
+  cached = raw.map((poi) => ({
     ...poi,
     category: mapCategory(poi.category, locale),
   }));
+  poisCache.set(locale, cached);
+  return cached;
 }
 
 function mapGeoJSON(locale: string): POIGeoJSON {
+  let cached = geojsonCache.get(locale);
+  if (cached) return cached;
+
   const raw = geojsonByLocale[locale] ?? geojsonByLocale.ko;
   const geojson = raw as { type: string; features: Array<{ type: string; geometry: unknown; properties: Record<string, unknown> }> };
-  return {
+  cached = {
     type: "FeatureCollection",
     features: geojson.features.map((f) => ({
       type: "Feature" as const,
@@ -71,6 +83,17 @@ function mapGeoJSON(locale: string): POIGeoJSON {
       } as POIGeoJSON["features"][0]["properties"],
     })),
   };
+  geojsonCache.set(locale, cached);
+  return cached;
+}
+
+function getSlugIndex(locale: string): Map<string, POI> {
+  let index = slugIndexCache.get(locale);
+  if (index) return index;
+
+  index = new Map(getAllPOIs(locale).map((poi) => [poi.slug, poi]));
+  slugIndexCache.set(locale, index);
+  return index;
 }
 
 export function getAllPOIs(locale: string): POI[] {
@@ -92,7 +115,7 @@ export function getAllPOISummaries(locale: string): POISummary[] {
 }
 
 export function getPOIBySlug(locale: string, slug: string): POI | undefined {
-  return getAllPOIs(locale).find((poi) => poi.slug === slug);
+  return getSlugIndex(locale).get(slug);
 }
 
 export function getAllSlugs(locale: string): string[] {

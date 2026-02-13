@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { Popup } from "react-map-gl/maplibre";
 import { useLocale, useTranslations } from "next-intl";
 import { CATEGORY_MAP } from "@/lib/categories";
@@ -13,13 +14,16 @@ export default function POIPopup({ poi, onClose }: POIPopupProps) {
   const locale = useLocale() as "ko" | "en";
   const t = useTranslations("poi");
   const cat = CATEGORY_MAP[poi.category];
+  const isNavigatingRef = useRef(false);
 
   return (
     <Popup
       longitude={poi.coordinates.lng}
       latitude={poi.coordinates.lat}
       anchor="bottom"
-      onClose={onClose}
+      onClose={() => {
+        if (!isNavigatingRef.current) onClose();
+      }}
       closeButton={true}
       closeOnClick={false}
       maxWidth="280px"
@@ -50,6 +54,9 @@ export default function POIPopup({ poi, onClose }: POIPopupProps) {
         )}
         <Link
           href={`/spots/${poi.slug}`}
+          onClick={() => {
+            isNavigatingRef.current = true;
+          }}
           className="inline-block rounded-lg bg-primary px-3 py-1.5 text-xs font-medium text-primary-foreground transition-colors hover:bg-primary/90"
         >
           {t("viewDetail")}

@@ -4,6 +4,7 @@ import {
   clusterLayer,
   clusterCountLayer,
   unclusteredPointLayer,
+  poiLabelLayer,
 } from "./map-layers";
 import { CLUSTER_MAX_ZOOM, CLUSTER_RADIUS } from "@/lib/constants";
 import type { POIGeoJSON } from "@/types/poi";
@@ -25,6 +26,7 @@ export default memo(function ClusterSource({ data }: ClusterSourceProps) {
       <Layer {...clusterLayer} />
       <Layer {...clusterCountLayer} />
       <Layer {...unclusteredPointLayer} />
+      <Layer {...poiLabelLayer} />
     </Source>
   );
 });
