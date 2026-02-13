@@ -5,7 +5,8 @@
   },
   "header": {
     "title": "Korea Travel Map",
-    "locale": "한국어"
+    "locale": "한국어",
+    "openFilter": "필터"
   },
   "map": {
     "loading": "지도를 불러오는 중...",
@@ -22,7 +23,8 @@
     "all": "전체",
     "category": "카테고리",
     "region": "지역",
-    "clear": "필터 초기화"
+    "clear": "필터 초기화",
+    "openDrawer": "필터"
   },
   "categories": {
     "attraction": "관광지",

@@ -10,6 +10,7 @@ interface FilterChipsProps {
   selectedRegion: string | null;
   onToggleCategory: (cat: string) => void;
   onSelectRegion: (region: string | null) => void;
+  layout?: "horizontal" | "vertical";
 }
 
 export default function FilterChips({
@@ -17,6 +18,7 @@ export default function FilterChips({
   selectedRegion,
   onToggleCategory,
   onSelectRegion,
+  layout = "horizontal",
 }: FilterChipsProps) {
   const locale = useLocale() as "ko" | "en";
   const t = useTranslations("filter");
@@ -28,7 +30,15 @@ export default function FilterChips({
         <legend className="mb-1.5 text-xs font-medium text-muted-foreground">
           {t("category")}
         </legend>
-        <div className="-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0" role="group" aria-label={t("category")}>
+        <div
+          className={
+            layout === "vertical"
+              ? "flex flex-wrap gap-1.5"
+              : "-mx-4 flex gap-1.5 overflow-x-auto px-4 pb-1 lg:mx-0 lg:flex-wrap lg:overflow-visible lg:px-0 lg:pb-0"
+          }
+          role="group"
+          aria-label={t("category")}
+        >
           {CATEGORIES.map((cat) => {
             const isActive = selectedCategories.includes(cat.id);
             return (

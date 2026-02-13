@@ -20,6 +20,12 @@ export interface ClusterFeature {
   };
 }
 
+export interface UserLocation {
+  longitude: number;
+  latitude: number;
+  accuracy: number;
+}
+
 export interface FilterState {
   categories: string[];
   region: string | null;
