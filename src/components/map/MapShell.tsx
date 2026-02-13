@@ -1,16 +1,18 @@
 "use client";
 
-import { useState, useCallback, useMemo, useRef, Suspense } from "react";
+import { useState, useCallback, useMemo, useRef, useEffect, Suspense } from "react";
 import MapView from "./MapView";
+import GeolocateFAB from "./GeolocateFAB";
 import SidePanel from "../panel/SidePanel";
 import BottomSheet from "../panel/BottomSheet";
+import FilterDrawer from "../panel/FilterDrawer";
 import Header from "../layout/Header";
 import { useFilteredGeoJSON, useFilteredPOIs } from "@/hooks/useFilteredPOIs";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { usePOISearch } from "@/hooks/usePOISearch";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
 import { KOREA_CENTER } from "@/lib/constants";
-import type { MapViewState } from "@/types/map";
+import type { MapViewState, UserLocation } from "@/types/map";
 import type { POI, POIGeoJSON } from "@/types/poi";
 import type { MapRef } from "react-map-gl/maplibre";
 
@@ -28,6 +30,8 @@ function MapShellInner() {
 
   const [viewState, setViewState] = useState<MapViewState>(KOREA_CENTER);
   const [searchResults, setSearchResults] = useState<POI[]>([]);
+  const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
 
   const filteredGeoJSON = useFilteredGeoJSON(geojson, filters);
   const filteredPOIs = useFilteredPOIs(allPois, filters);
@@ -87,9 +91,41 @@ function MapShellInner() {
     [handleSelectPOI]
   );
 
+  const clearFilters = useCallback(() => {
+    setFilter("categories", []);
+    setFilter("region", null);
+  }, [setFilter]);
+
+  const activeFilterCount =
+    filters.categories.length + (filters.region ? 1 : 0);
+
+  // Left edge swipe to open filter drawer
+  useEffect(() => {
+    if (isDesktop) return;
+    let startX = 0;
+    const onTouchStart = (e: TouchEvent) => {
+      startX = e.touches[0].clientX;
+    };
+    const onTouchEnd = (e: TouchEvent) => {
+      const endX = e.changedTouches[0].clientX;
+      if (startX < 20 && endX - startX > 60) {
+        setIsFilterOpen(true);
+      }
+    };
+    window.addEventListener("touchstart", onTouchStart, { passive: true });
+    window.addEventListener("touchend", onTouchEnd, { passive: true });
+    return () => {
+      window.removeEventListener("touchstart", onTouchStart);
+      window.removeEventListener("touchend", onTouchEnd);
+    };
+  }, [isDesktop]);
+
   return (
     <div className="relative h-screen w-full">
-      <Header />
+      <Header
+        onOpenFilter={isDesktop ? undefined : () => setIsFilterOpen(true)}
+        activeFilterCount={activeFilterCount}
+      />
 
       {/* Map */}
       <div
@@ -106,6 +142,8 @@ function MapShellInner() {
           selectedPOI={selectedPOI}
           onSelectPOI={handleSelectPOI}
           mapRef={mapRef}
+          isDesktop={isDesktop}
+          userLocation={userLocation}
         />
       </div>
 
@@ -123,17 +161,31 @@ function MapShellInner() {
           onSelectPOI={handlePanelSelectPOI}
         />
       ) : (
-        <BottomSheet
-          pois={filteredPOIs}
-          selectedSlug={filters.selectedPOI}
-          selectedCategories={filters.categories}
-          selectedRegion={filters.region}
-          searchResults={searchResults}
-          onSearch={handleSearch}
-          onToggleCategory={handleToggleCategory}
-          onSelectRegion={handleSelectRegion}
-          onSelectPOI={handlePanelSelectPOI}
-        />
+        <>
+          <BottomSheet
+            selectedPOI={selectedPOI}
+            onDeselectPOI={() => handleSelectPOI(null)}
+          />
+          <GeolocateFAB
+            mapRef={mapRef}
+            bottomOffset={selectedPOI ? 220 : 140}
+            onLocationFound={setUserLocation}
+          />
+          <FilterDrawer
+            isOpen={isFilterOpen}
+            onClose={() => setIsFilterOpen(false)}
+            selectedCategories={filters.categories}
+            selectedRegion={filters.region}
+            onToggleCategory={handleToggleCategory}
+            onSelectRegion={handleSelectRegion}
+            onClearFilters={clearFilters}
+            pois={filteredPOIs}
+            selectedSlug={filters.selectedPOI}
+            searchResults={searchResults}
+            onSearch={handleSearch}
+            onSelectPOI={handlePanelSelectPOI}
+          />
+        </>
       )}
     </div>
   );
