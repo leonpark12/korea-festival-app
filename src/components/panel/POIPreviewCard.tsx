@@ -47,12 +47,12 @@ export default function POIPreviewCard({ poi, onClose }: POIPreviewCardProps) {
       </div>
 
       <h3 className="text-sm font-bold text-foreground">
-        {poi.name[locale]}
+        {poi.name}
       </h3>
-      <p className="text-xs text-muted-foreground">{poi.address[locale]}</p>
+      <p className="text-xs text-muted-foreground">{poi.address}</p>
       {poi.description && (
         <p className="line-clamp-2 text-xs text-muted-foreground">
-          {poi.description[locale]}
+          {poi.description}
         </p>
       )}
 

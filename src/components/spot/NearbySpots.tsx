@@ -37,10 +37,10 @@ export default function NearbySpots({ pois, locale }: NearbySpotsProps) {
                 </span>
               </div>
               <p className="text-sm font-semibold text-foreground">
-                {poi.name[locale]}
+                {poi.name}
               </p>
               <p className="line-clamp-1 text-xs text-muted-foreground">
-                {poi.address[locale]}
+                {poi.address}
               </p>
             </Link>
           );

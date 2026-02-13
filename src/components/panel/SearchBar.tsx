@@ -2,13 +2,13 @@
 
 import { useState, useEffect, useRef } from "react";
 import { Command } from "cmdk";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
 import { CATEGORY_MAP } from "@/lib/categories";
-import type { POI } from "@/types/poi";
+import type { POISummary } from "@/types/poi";
 
 interface SearchBarProps {
   onSearch: (query: string) => void;
-  searchResults: POI[];
+  searchResults: POISummary[];
   onSelect: (slug: string) => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
@@ -21,7 +21,6 @@ export default function SearchBar({
   isOpen: controlledOpen,
   onOpenChange,
 }: SearchBarProps) {
-  const locale = useLocale() as "ko" | "en";
   const t = useTranslations("search");
   const [query, setQuery] = useState("");
   const [isOpen, setIsOpen] = useState(false);
@@ -76,10 +75,10 @@ export default function SearchBar({
                     <span className="text-xs">{cat.icon}</span>
                     <div className="flex-1">
                       <p className="font-medium text-foreground">
-                        {poi.name[locale]}
+                        {poi.name}
                       </p>
                       <p className="text-xs text-muted-foreground">
-                        {poi.address[locale]}
+                        {poi.address}
                       </p>
                     </div>
                   </Command.Item>

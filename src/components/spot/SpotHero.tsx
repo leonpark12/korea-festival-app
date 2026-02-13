@@ -43,11 +43,8 @@ export default function SpotHero({ poi, locale }: SpotHeroProps) {
           </span>
         </div>
         <h1 className="text-2xl font-bold text-white sm:text-3xl">
-          {poi.name[locale]}
+          {poi.name}
         </h1>
-        {locale === "ko" && (
-          <p className="mt-1 text-sm text-white/80">{poi.name.en}</p>
-        )}
       </div>
     </div>
   );

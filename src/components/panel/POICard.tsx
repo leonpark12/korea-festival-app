@@ -3,10 +3,10 @@
 import { memo } from "react";
 import { useLocale, useTranslations } from "next-intl";
 import { CATEGORY_MAP } from "@/lib/categories";
-import type { POI } from "@/types/poi";
+import type { POISummary } from "@/types/poi";
 
 interface POICardProps {
-  poi: POI;
+  poi: POISummary;
   onSelect: (slug: string) => void;
   isSelected?: boolean;
 }
@@ -20,7 +20,7 @@ export default memo(function POICard({ poi, onSelect, isSelected }: POICardProps
     <button
       onClick={() => onSelect(poi.slug)}
       aria-selected={isSelected}
-      aria-label={`${poi.name[locale]} - ${cat.label[locale]}`}
+      aria-label={`${poi.name} - ${cat.label[locale]}`}
       className={`w-full rounded-xl border p-3 text-left transition-all hover:shadow-md ${
         isSelected
           ? "border-primary bg-primary/5 shadow-md"
@@ -40,10 +40,10 @@ export default memo(function POICard({ poi, onSelect, isSelected }: POICardProps
         </span>
       </div>
       <h3 className="mb-0.5 text-sm font-semibold text-foreground">
-        {poi.name[locale]}
+        {poi.name}
       </h3>
       <p className="line-clamp-1 text-xs text-muted-foreground">
-        {poi.address[locale]}
+        {poi.address}
       </p>
     </button>
   );

@@ -1,51 +1,64 @@
 "use client";
 
-import { useState, useCallback, useMemo, useRef, useEffect, Suspense } from "react";
+import { useState, useCallback, useRef, useEffect, Suspense } from "react";
+import { useLocale } from "next-intl";
 import MapView from "./MapView";
 import GeolocateFAB from "./GeolocateFAB";
 import SidePanel from "../panel/SidePanel";
 import BottomSheet from "../panel/BottomSheet";
 import FilterDrawer from "../panel/FilterDrawer";
 import Header from "../layout/Header";
+import { usePOIData } from "@/hooks/usePOIData";
 import { useFilteredGeoJSON, useFilteredPOIs } from "@/hooks/useFilteredPOIs";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { usePOISearch } from "@/hooks/usePOISearch";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
 import { KOREA_CENTER } from "@/lib/constants";
 import type { MapViewState, UserLocation } from "@/types/map";
-import type { POI, POIGeoJSON } from "@/types/poi";
+import type { POI, POISummary } from "@/types/poi";
 import type { MapRef } from "react-map-gl/maplibre";
 
-import poisJson from "@/data/pois.json";
-import geojsonData from "@/data/pois.geo.json";
-
-const allPois = poisJson as POI[];
-const geojson = geojsonData as unknown as POIGeoJSON;
-
 function MapShellInner() {
+  const locale = useLocale();
+  const { summaries, geojson, isLoading } = usePOIData();
   const { filters, setFilter } = useQueryParams();
   const isDesktop = useIsDesktop();
   const mapRef = useRef<MapRef>(null);
   const zoomRef = useRef(KOREA_CENTER.zoom);
 
   const [viewState, setViewState] = useState<MapViewState>(KOREA_CENTER);
-  const [searchResults, setSearchResults] = useState<POI[]>([]);
+  const [searchResults, setSearchResults] = useState<POISummary[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
+  const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
 
   const filteredGeoJSON = useFilteredGeoJSON(geojson, filters);
-  const filteredPOIs = useFilteredPOIs(allPois, filters);
-  const { search } = usePOISearch(allPois);
+  const filteredPOIs = useFilteredPOIs(summaries, filters);
+  const { search } = usePOISearch();
 
-  const selectedPOI = useMemo(
-    () => allPois.find((p) => p.slug === filters.selectedPOI) ?? null,
-    [filters.selectedPOI]
-  );
+  // Fetch full POI details when selection changes
+  useEffect(() => {
+    const slug = filters.selectedPOI;
+    if (!slug) {
+      setSelectedPOI(null);
+      return;
+    }
+
+    let cancelled = false;
+    fetch(`/api/pois/${slug}?locale=${locale}`)
+      .then((res) => (res.ok ? res.json() : null))
+      .then((poi) => {
+        if (!cancelled && poi) setSelectedPOI(poi);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [filters.selectedPOI, locale]);
 
   const handleSearch = useCallback(
-    (query: string) => {
+    async (query: string) => {
       setFilter("query", query || null);
-      const results = search(query);
+      const results = await search(query);
       setSearchResults(results);
     },
     [search, setFilter]
@@ -55,17 +68,18 @@ function MapShellInner() {
     (slug: string | null) => {
       setFilter("selectedPOI", slug);
       if (slug) {
-        const poi = allPois.find((p) => p.slug === slug);
-        if (poi) {
+        // Use summary coordinates for immediate flyTo
+        const summary = summaries.find((p) => p.slug === slug);
+        if (summary) {
           mapRef.current?.flyTo({
-            center: [poi.coordinates.lng, poi.coordinates.lat],
+            center: [summary.coordinates.lng, summary.coordinates.lat],
             zoom: Math.max(zoomRef.current, 13),
             duration: 500,
           });
         }
       }
     },
-    [setFilter]
+    [setFilter, summaries]
   );
 
   const handleToggleCategory = useCallback(
