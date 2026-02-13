@@ -6,7 +6,7 @@ import SpotHero from "@/components/spot/SpotHero";
 import SpotInfo from "@/components/spot/SpotInfo";
 import SpotJsonLd from "@/components/spot/SpotJsonLd";
 import NearbySpots from "@/components/spot/NearbySpots";
-import { Link } from "@/i18n/navigation";
+import BackButton from "@/components/spot/BackButton";
 
 // ISR: 상세 페이지를 빌드 타임에 생성하지 않고, 첫 방문 시 생성 후 24시간 캐시
 export const dynamicParams = true;
@@ -57,12 +57,7 @@ export default async function SpotPage({ params }: Props) {
 
       {/* Back button */}
       <div className="absolute top-4 left-4 z-10">
-        <Link
-          href="/"
-          className="inline-flex items-center gap-1 rounded-full bg-white/90 px-3 py-1.5 text-sm font-medium text-foreground shadow-md backdrop-blur-sm transition-colors hover:bg-white"
-        >
-          ← Back
-        </Link>
+        <BackButton />
       </div>
 
       <SpotHero poi={poi} locale={loc} />

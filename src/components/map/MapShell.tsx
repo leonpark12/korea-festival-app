@@ -26,7 +26,28 @@ function MapShellInner() {
   const mapRef = useRef<MapRef>(null);
   const zoomRef = useRef(KOREA_CENTER.zoom);
 
-  const [viewState, setViewState] = useState<MapViewState>(KOREA_CENTER);
+  const [viewState, setViewState] = useState<MapViewState>(() => {
+    try {
+      const saved = sessionStorage.getItem("mapViewState");
+      if (saved) return JSON.parse(saved);
+    } catch {}
+    return KOREA_CENTER;
+  });
+  const viewStateRef = useRef(viewState);
+  viewStateRef.current = viewState;
+
+  // Save viewState to sessionStorage on unmount
+  useEffect(() => {
+    return () => {
+      try {
+        sessionStorage.setItem(
+          "mapViewState",
+          JSON.stringify(viewStateRef.current)
+        );
+      } catch {}
+    };
+  }, []);
+
   const [searchResults, setSearchResults] = useState<POISummary[]>([]);
   const [isFilterOpen, setIsFilterOpen] = useState(false);
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
@@ -44,14 +65,15 @@ function MapShellInner() {
       return;
     }
 
-    let cancelled = false;
-    fetch(`/api/pois/${slug}?locale=${locale}`)
+    const controller = new AbortController();
+    fetch(`/api/pois/${slug}?locale=${locale}`, { signal: controller.signal })
       .then((res) => (res.ok ? res.json() : null))
       .then((poi) => {
-        if (!cancelled && poi) setSelectedPOI(poi);
-      });
+        if (poi) setSelectedPOI(poi);
+      })
+      .catch(() => {});
     return () => {
-      cancelled = true;
+      controller.abort();
     };
   }, [filters.selectedPOI, locale]);
 

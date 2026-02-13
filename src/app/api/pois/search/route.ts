@@ -29,12 +29,16 @@ export function GET(request: NextRequest) {
   const q = sp.get("q") ?? "";
   const limit = parseInt(sp.get("limit") ?? "10", 10);
 
+  const headers = {
+    "Cache-Control": "public, s-maxage=3600, stale-while-revalidate=86400",
+  };
+
   if (!q.trim()) {
-    return NextResponse.json([]);
+    return NextResponse.json([], { headers });
   }
 
   const fuse = getFuse(locale);
   const results = fuse.search(q, { limit }).map((r) => r.item);
 
-  return NextResponse.json(results);
+  return NextResponse.json(results, { headers });
 }

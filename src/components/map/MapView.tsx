@@ -99,6 +99,10 @@ export default function MapView({
       onMouseEnter={onMouseEnter}
       onMouseLeave={onMouseLeave}
       style={{ width: "100%", height: "100%" }}
+      minZoom={5.5}
+      maxZoom={18}
+      dragRotate={false}
+      touchPitch={false}
       maxBounds={[
         [122, 32],
         [132, 40],
