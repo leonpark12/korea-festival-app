@@ -2,7 +2,7 @@ import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { routing } from "@/i18n/routing";
-import { getAllPOIs, getPOIBySlug, getNearbyPOIs } from "@/lib/data-loader";
+import { getAllSlugs, getPOIBySlug, getNearbyPOIs } from "@/lib/data-loader";
 import SpotHero from "@/components/spot/SpotHero";
 import SpotInfo from "@/components/spot/SpotInfo";
 import SpotJsonLd from "@/components/spot/SpotJsonLd";
@@ -14,12 +14,12 @@ type Props = {
 };
 
 export function generateStaticParams() {
-  const pois = getAllPOIs();
   const params: { locale: string; slug: string }[] = [];
 
   for (const locale of routing.locales) {
-    for (const poi of pois) {
-      params.push({ locale, slug: poi.slug });
+    const slugs = getAllSlugs(locale);
+    for (const slug of slugs) {
+      params.push({ locale, slug });
     }
   }
 
@@ -28,26 +28,18 @@ export function generateStaticParams() {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const poi = getPOIBySlug(slug);
+  const poi = getPOIBySlug(locale, slug);
   if (!poi) return {};
 
-  const loc = locale as "ko" | "en";
-
   return {
-    title: poi.name[loc],
-    description:
-      poi.description?.[loc] ?? `${poi.name[loc]} - ${poi.address[loc]}`,
+    title: poi.name,
+    description: poi.description ?? `${poi.name} - ${poi.address}`,
     alternates: {
       canonical: `/${locale}/spots/${slug}`,
-      languages: {
-        ko: `/ko/spots/${slug}`,
-        en: `/en/spots/${slug}`,
-      },
     },
     openGraph: {
-      title: poi.name[loc],
-      description:
-        poi.description?.[loc] ?? `${poi.name[loc]} - ${poi.address[loc]}`,
+      title: poi.name,
+      description: poi.description ?? `${poi.name} - ${poi.address}`,
       locale: locale === "ko" ? "ko_KR" : "en_US",
       type: "article",
     },
@@ -58,11 +50,12 @@ export default async function SpotPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const poi = getPOIBySlug(slug);
+  const poi = getPOIBySlug(locale, slug);
   if (!poi) notFound();
 
   const loc = locale as "ko" | "en";
   const nearby = getNearbyPOIs(
+    locale,
     poi.coordinates.lat,
     poi.coordinates.lng,
     poi.slug
@@ -70,7 +63,7 @@ export default async function SpotPage({ params }: Props) {
 
   return (
     <div className="min-h-screen bg-white">
-      <SpotJsonLd poi={poi} locale={loc} />
+      <SpotJsonLd poi={poi} />
 
       {/* Back button */}
       <div className="absolute top-4 left-4 z-10">
@@ -83,7 +76,7 @@ export default async function SpotPage({ params }: Props) {
       </div>
 
       <SpotHero poi={poi} locale={loc} />
-      <SpotInfo poi={poi} locale={loc} />
+      <SpotInfo poi={poi} />
       <NearbySpots pois={nearby} locale={loc} />
     </div>
   );

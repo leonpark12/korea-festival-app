@@ -38,14 +38,14 @@ export default function POIPopup({ poi, onClose }: POIPopupProps) {
           </span>
         </div>
         <h3 className="mb-1 text-sm font-bold text-foreground">
-          {poi.name[locale]}
+          {poi.name}
         </h3>
         <p className="mb-2 text-xs text-muted-foreground">
-          {poi.address[locale]}
+          {poi.address}
         </p>
         {poi.description && (
           <p className="mb-3 line-clamp-2 text-xs text-muted-foreground">
-            {poi.description[locale]}
+            {poi.description}
           </p>
         )}
         <Link

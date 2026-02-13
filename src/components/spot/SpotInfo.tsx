@@ -3,10 +3,9 @@ import type { POI } from "@/types/poi";
 
 interface SpotInfoProps {
   poi: POI;
-  locale: "ko" | "en";
 }
 
-export default function SpotInfo({ poi, locale }: SpotInfoProps) {
+export default function SpotInfo({ poi }: SpotInfoProps) {
   const t = useTranslations("poi");
   const tSpot = useTranslations("spot");
 
@@ -18,7 +17,7 @@ export default function SpotInfo({ poi, locale }: SpotInfoProps) {
           {t("description")}
         </h2>
         <p className="leading-relaxed text-muted-foreground">
-          {poi.description?.[locale] ?? tSpot("noDescription")}
+          {poi.description ?? tSpot("noDescription")}
         </p>
       </section>
 
@@ -31,7 +30,7 @@ export default function SpotInfo({ poi, locale }: SpotInfoProps) {
             <p className="text-xs font-medium text-muted-foreground">
               {t("address")}
             </p>
-            <p className="text-sm text-foreground">{poi.address[locale]}</p>
+            <p className="text-sm text-foreground">{poi.address}</p>
           </div>
         </div>
 

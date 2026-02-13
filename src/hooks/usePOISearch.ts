@@ -1,35 +1,32 @@
 "use client";
 
-import { useMemo, useRef, useCallback } from "react";
-import Fuse from "fuse.js";
-import type { POI } from "@/types/poi";
+import { useCallback, useRef } from "react";
+import { useLocale } from "next-intl";
+import type { POISummary } from "@/types/poi";
 
-export function usePOISearch(pois: POI[]) {
-  const fuseRef = useRef<Fuse<POI> | null>(null);
-
-  const index = useMemo(() => {
-    const fuse = new Fuse(pois, {
-      keys: [
-        { name: "name.ko", weight: 2 },
-        { name: "name.en", weight: 2 },
-        { name: "address.ko", weight: 1 },
-        { name: "address.en", weight: 1 },
-        { name: "tags", weight: 1.5 },
-      ],
-      threshold: 0.3,
-      includeScore: true,
-      minMatchCharLength: 1,
-    });
-    fuseRef.current = fuse;
-    return fuse;
-  }, [pois]);
+export function usePOISearch() {
+  const locale = useLocale();
+  const abortRef = useRef<AbortController | null>(null);
 
   const search = useCallback(
-    (query: string, limit = 10): POI[] => {
+    async (query: string, limit = 10): Promise<POISummary[]> => {
       if (!query.trim()) return [];
-      return index.search(query, { limit }).map((r) => r.item);
+
+      abortRef.current?.abort();
+      const controller = new AbortController();
+      abortRef.current = controller;
+
+      try {
+        const res = await fetch(
+          `/api/pois/search?locale=${locale}&q=${encodeURIComponent(query)}&limit=${limit}`,
+          { signal: controller.signal }
+        );
+        return (await res.json()) as POISummary[];
+      } catch {
+        return [];
+      }
     },
-    [index]
+    [locale]
   );
 
   return { search };

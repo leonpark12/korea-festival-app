@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import FilterChips from "./FilterChips";
 import SearchBar from "./SearchBar";
 import POICardList from "./POICardList";
-import type { POI } from "@/types/poi";
+import type { POISummary } from "@/types/poi";
 
 interface FilterDrawerProps {
   isOpen: boolean;
@@ -15,9 +15,9 @@ interface FilterDrawerProps {
   onToggleCategory: (cat: string) => void;
   onSelectRegion: (region: string | null) => void;
   onClearFilters: () => void;
-  pois?: POI[];
+  pois?: POISummary[];
   selectedSlug?: string | null;
-  searchResults?: POI[];
+  searchResults?: POISummary[];
   onSearch?: (query: string) => void;
   onSelectPOI?: (slug: string) => void;
 }

@@ -3,14 +3,14 @@
 import SearchBar from "./SearchBar";
 import FilterChips from "./FilterChips";
 import POICardList from "./POICardList";
-import type { POI } from "@/types/poi";
+import type { POISummary } from "@/types/poi";
 
 interface SidePanelProps {
-  pois: POI[];
+  pois: POISummary[];
   selectedSlug: string | null;
   selectedCategories: string[];
   selectedRegion: string | null;
-  searchResults: POI[];
+  searchResults: POISummary[];
   onSearch: (query: string) => void;
   onToggleCategory: (cat: string) => void;
   onSelectRegion: (region: string | null) => void;

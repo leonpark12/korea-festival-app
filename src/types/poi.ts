@@ -27,27 +27,18 @@ export type RegionCode =
   | "gyeongnam"
   | "jeju";
 
-export interface POI {
+export interface POISummary {
   id: string;
   slug: string;
+  name: string;
+  address: string;
   category: Category;
-  coordinates: {
-    lat: number;
-    lng: number;
-  };
-  name: {
-    ko: string;
-    en: string;
-  };
-  address: {
-    ko: string;
-    en: string;
-  };
-  description?: {
-    ko: string;
-    en: string;
-  };
   region: RegionCode;
+  coordinates: { lat: number; lng: number };
+}
+
+export interface POI extends POISummary {
+  description?: string;
   images?: string[];
   contact?: string;
   website?: string;
@@ -59,8 +50,7 @@ export interface POIGeoJSONProperties {
   id: string;
   slug: string;
   category: Category;
-  name_ko: string;
-  name_en: string;
+  name: string;
   region: RegionCode;
 }
 

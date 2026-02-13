@@ -2,10 +2,10 @@
 
 import { useTranslations } from "next-intl";
 import POICard from "./POICard";
-import type { POI } from "@/types/poi";
+import type { POISummary } from "@/types/poi";
 
 interface POICardListProps {
-  pois: POI[];
+  pois: POISummary[];
   selectedSlug: string | null;
   onSelect: (slug: string) => void;
 }

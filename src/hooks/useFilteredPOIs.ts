@@ -1,7 +1,7 @@
 "use client";
 
 import { useMemo } from "react";
-import type { POIGeoJSON, POIFeature, POI } from "@/types/poi";
+import type { POIGeoJSON, POISummary } from "@/types/poi";
 import type { FilterState } from "@/types/map";
 
 export function useFilteredGeoJSON(
@@ -27,7 +27,10 @@ export function useFilteredGeoJSON(
   }, [geojson, filters.categories, filters.region]);
 }
 
-export function useFilteredPOIs(pois: POI[], filters: FilterState): POI[] {
+export function useFilteredPOIs(
+  pois: POISummary[],
+  filters: FilterState
+): POISummary[] {
   return useMemo(() => {
     let filtered = pois;
 
