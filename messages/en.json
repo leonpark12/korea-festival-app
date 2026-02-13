@@ -5,8 +5,7 @@
   },
   "header": {
     "title": "Korea Travel Map",
-    "locale": "English",
-    "openFilter": "Filter"
+    "locale": "English"
   },
   "map": {
     "loading": "Loading map...",
