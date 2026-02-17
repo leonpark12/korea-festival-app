@@ -9,7 +9,6 @@ import BottomSheet from "../panel/BottomSheet";
 import FilterDrawer from "../panel/FilterDrawer";
 import Header from "../layout/Header";
 import { usePOIData } from "@/hooks/usePOIData";
-import { useFilteredGeoJSON, useFilteredPOIs } from "@/hooks/useFilteredPOIs";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { usePOISearch } from "@/hooks/usePOISearch";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
@@ -20,11 +19,16 @@ import type { MapRef } from "react-map-gl/maplibre";
 
 function MapShellInner() {
   const locale = useLocale();
-  const { summaries, geojson, isLoading } = usePOIData();
   const { filters, setFilter } = useQueryParams();
   const isDesktop = useIsDesktop();
   const mapRef = useRef<MapRef>(null);
   const zoomRef = useRef(KOREA_CENTER.zoom);
+
+  // Viewport 기반 POI 데이터 (필터를 서버로 전달)
+  const { cardGroups, totalVisible, geojson, isLoading, onViewportChange } = usePOIData({
+    categories: filters.categories,
+    region: filters.region || undefined,
+  });
 
   const [viewState, setViewState] = useState<MapViewState>(() => {
     try {
@@ -53,8 +57,6 @@ function MapShellInner() {
   const [selectedPOI, setSelectedPOI] = useState<POI | null>(null);
   const [userLocation, setUserLocation] = useState<UserLocation | null>(null);
 
-  const filteredGeoJSON = useFilteredGeoJSON(geojson, filters);
-  const filteredPOIs = useFilteredPOIs(summaries, filters);
   const { search } = usePOISearch();
 
   // Fetch full POI details when selection changes
@@ -90,18 +92,19 @@ function MapShellInner() {
     (slug: string | null) => {
       setFilter("selectedPOI", slug);
       if (slug) {
-        // Use summary coordinates for immediate flyTo
-        const summary = summaries.find((p) => p.slug === slug);
-        if (summary) {
+        // geojson features에서 slug로 좌표 조회
+        const feature = geojson.features.find((f) => f.properties.slug === slug);
+        if (feature) {
+          const [lng, lat] = feature.geometry.coordinates;
           mapRef.current?.flyTo({
-            center: [summary.coordinates.lng, summary.coordinates.lat],
+            center: [lng, lat],
             zoom: Math.max(zoomRef.current, 13),
             duration: 500,
           });
         }
       }
     },
-    [setFilter, summaries]
+    [setFilter, geojson]
   );
 
   const handleToggleCategory = useCallback(
@@ -169,12 +172,13 @@ function MapShellInner() {
         style={isDesktop ? { paddingLeft: "384px" } : undefined}
       >
         <MapView
-          data={filteredGeoJSON}
+          data={geojson}
           viewState={viewState}
           onViewStateChange={(vs) => {
             zoomRef.current = vs.zoom;
             setViewState(vs);
           }}
+          onViewportChange={onViewportChange}
           selectedPOI={selectedPOI}
           onSelectPOI={handleSelectPOI}
           mapRef={mapRef}
@@ -186,7 +190,8 @@ function MapShellInner() {
       {/* Panel */}
       {isDesktop ? (
         <SidePanel
-          pois={filteredPOIs}
+          cardGroups={cardGroups}
+          totalVisible={totalVisible}
           selectedSlug={filters.selectedPOI}
           selectedCategories={filters.categories}
           selectedRegion={filters.region}
@@ -215,7 +220,8 @@ function MapShellInner() {
             onToggleCategory={handleToggleCategory}
             onSelectRegion={handleSelectRegion}
             onClearFilters={clearFilters}
-            pois={filteredPOIs}
+            cardGroups={cardGroups}
+            totalVisible={totalVisible}
             selectedSlug={filters.selectedPOI}
             searchResults={searchResults}
             onSearch={handleSearch}

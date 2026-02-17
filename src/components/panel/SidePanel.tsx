@@ -3,10 +3,11 @@
 import SearchBar from "./SearchBar";
 import FilterChips from "./FilterChips";
 import POICardList from "./POICardList";
-import type { POISummary } from "@/types/poi";
+import type { POISummary, CategoryCardGroup } from "@/types/poi";
 
 interface SidePanelProps {
-  pois: POISummary[];
+  cardGroups: CategoryCardGroup[];
+  totalVisible: number;
   selectedSlug: string | null;
   selectedCategories: string[];
   selectedRegion: string | null;
@@ -18,7 +19,8 @@ interface SidePanelProps {
 }
 
 export default function SidePanel({
-  pois,
+  cardGroups,
+  totalVisible,
   selectedSlug,
   selectedCategories,
   selectedRegion,
@@ -43,7 +45,8 @@ export default function SidePanel({
           onSelectRegion={onSelectRegion}
         />
         <POICardList
-          pois={pois}
+          groups={cardGroups}
+          totalVisible={totalVisible}
           selectedSlug={selectedSlug}
           onSelect={onSelectPOI}
         />

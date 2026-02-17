@@ -52,6 +52,10 @@ export interface POIGeoJSONProperties {
   category: Category;
   name: string;
   region: RegionCode;
+  /** 서버사이드 region 클러스터 전용 */
+  cluster?: boolean;
+  point_count?: number;
+  point_count_abbreviated?: string;
 }
 
 export interface POIGeoJSON {
@@ -66,6 +70,12 @@ export interface POIFeature {
     coordinates: [number, number]; // [lng, lat]
   };
   properties: POIGeoJSONProperties;
+}
+
+export interface CategoryCardGroup {
+  category: Category;
+  total: number;
+  items: POISummary[];
 }
 
 export interface Region {

@@ -18,7 +18,7 @@ type Props = {
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
-  const poi = getPOIBySlug(locale, slug);
+  const poi = await getPOIBySlug(locale, slug);
   if (!poi) return {};
 
   return {
@@ -40,11 +40,11 @@ export default async function SpotPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
 
-  const poi = getPOIBySlug(locale, slug);
+  const poi = await getPOIBySlug(locale, slug);
   if (!poi) notFound();
 
   const loc = locale as "ko" | "en";
-  const nearby = getNearbyPOIs(
+  const nearby = await getNearbyPOIs(
     locale,
     poi.coordinates.lat,
     poi.coordinates.lng,

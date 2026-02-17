@@ -17,7 +17,9 @@
   "search": {
     "placeholder": "Search places...",
     "noResults": "No results found",
-    "results": "{count} results"
+    "results": "{count} results",
+    "viewportResults": "{count} in view",
+    "perCategory": "{count} total"
   },
   "filter": {
     "all": "All",

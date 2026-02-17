@@ -1,11 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getGeoJSON, getGeoJSONByBBox, getRegionClusters } from "@/lib/data-loader";
+import { getCardsByCategory } from "@/lib/data-loader";
 
 export async function GET(request: NextRequest) {
   const sp = request.nextUrl.searchParams;
   const locale = sp.get("locale") ?? "ko";
   const bbox = sp.get("bbox");
   const zoom = parseFloat(sp.get("zoom") ?? "7");
+  const perCategory = Math.min(parseInt(sp.get("per_category") ?? "5", 10), 20);
 
   // 카테고리/지역 필터
   const categoriesParam = sp.get("categories");
@@ -14,24 +15,16 @@ export async function GET(request: NextRequest) {
   const filters = categories || region ? { categories, region } : undefined;
 
   try {
-    let data;
+    let parsedBbox: [number, number, number, number] | undefined;
 
-    if (bbox) {
+    if (bbox && zoom >= 10) {
       const parts = bbox.split(",").map(Number);
       if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
-        const [west, south, east, north] = parts as [number, number, number, number];
-
-        if (zoom < 10) {
-          data = await getRegionClusters(locale, filters);
-        } else {
-          data = await getGeoJSONByBBox(locale, [west, south, east, north], filters);
-        }
+        parsedBbox = parts as [number, number, number, number];
       }
     }
 
-    if (!data) {
-      data = await getGeoJSON(locale);
-    }
+    const data = await getCardsByCategory(locale, perCategory, parsedBbox, filters);
 
     return NextResponse.json(data, {
       headers: {
@@ -41,17 +34,10 @@ export async function GET(request: NextRequest) {
       },
     });
   } catch (error) {
-    console.error("[geojson API] error:", error);
-    // fallback: 전체 GeoJSON 반환
-    try {
-      const fallback = await getGeoJSON(locale);
-      return NextResponse.json(fallback);
-    } catch (fallbackError) {
-      console.error("[geojson API] fallback error:", fallbackError);
-      return NextResponse.json(
-        { type: "FeatureCollection", features: [] },
-        { status: 500 }
-      );
-    }
+    console.error("[pois/cards API] error:", error);
+    return NextResponse.json(
+      { groups: [], totalVisible: 0 },
+      { status: 500 }
+    );
   }
 }
