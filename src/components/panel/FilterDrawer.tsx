@@ -5,7 +5,7 @@ import { useTranslations } from "next-intl";
 import FilterChips from "./FilterChips";
 import SearchBar from "./SearchBar";
 import POICardList from "./POICardList";
-import type { POISummary } from "@/types/poi";
+import type { POISummary, CategoryCardGroup } from "@/types/poi";
 
 interface FilterDrawerProps {
   isOpen: boolean;
@@ -15,7 +15,8 @@ interface FilterDrawerProps {
   onToggleCategory: (cat: string) => void;
   onSelectRegion: (region: string | null) => void;
   onClearFilters: () => void;
-  pois?: POISummary[];
+  cardGroups?: CategoryCardGroup[];
+  totalVisible?: number;
   selectedSlug?: string | null;
   searchResults?: POISummary[];
   onSearch?: (query: string) => void;
@@ -30,7 +31,8 @@ export default function FilterDrawer({
   onToggleCategory,
   onSelectRegion,
   onClearFilters,
-  pois,
+  cardGroups,
+  totalVisible,
   selectedSlug,
   searchResults,
   onSearch,
@@ -130,9 +132,10 @@ export default function FilterDrawer({
             </button>
           )}
 
-          {pois && onSelectPOI && (
+          {cardGroups && onSelectPOI && (
             <POICardList
-              pois={pois}
+              groups={cardGroups}
+              totalVisible={totalVisible ?? 0}
               selectedSlug={selectedSlug ?? null}
               onSelect={handleSelectAndClose}
             />

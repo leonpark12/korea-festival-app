@@ -4,7 +4,7 @@ import { routing } from "@/i18n/routing";
 
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://korea-travel-map.vercel.app";
 
-export default function sitemap(): MetadataRoute.Sitemap {
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const entries: MetadataRoute.Sitemap = [];
 
   // Main pages
@@ -25,7 +25,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 
   // Spot detail pages (per locale, no cross-locale alternates since slugs differ)
   for (const locale of routing.locales) {
-    const pois = getAllPOIs(locale);
+    const pois = await getAllPOIs(locale);
     for (const poi of pois) {
       entries.push({
         url: `${BASE_URL}/${locale}/spots/${poi.slug}`,

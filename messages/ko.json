@@ -17,7 +17,9 @@
   "search": {
     "placeholder": "장소를 검색하세요...",
     "noResults": "검색 결과가 없습니다",
-    "results": "{count}개의 결과"
+    "results": "{count}개의 결과",
+    "viewportResults": "화면 내 {count}개",
+    "perCategory": "{count}개"
   },
   "filter": {
     "all": "전체",

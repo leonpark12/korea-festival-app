@@ -7,13 +7,16 @@
 ## Features
 
 - **인터랙티브 지도**: MapLibre GL JS 기반, 마커 클러스터링 지원
+- **MongoDB 백엔드**: 21,000+ POI 데이터, viewport 기반 로딩
+- **카테고리별 카드뷰**: 8개 카테고리별 5개씩 그룹화하여 표시
 - **카테고리 필터**: 관광지, 맛집, 숙박, 쇼핑, 축제, 문화, 자연, 레저
 - **지역 필터**: 17개 시/도 단위 필터링
-- **퍼지 검색**: Fuse.js + cmdk 커맨드 팔레트
+- **퍼지 검색**: MongoDB text search + cmdk 커맨드 팔레트
 - **다국어**: 한국어/영어 (next-intl, URL prefix 방식)
 - **반응형 레이아웃**: 데스크톱 사이드패널 / 모바일 바텀시트
-- **상세 페이지**: 25개 POI별 정적 페이지 (SEO 최적화, JSON-LD)
+- **상세 페이지**: POI별 ISR 페이지 (SEO 최적화, JSON-LD)
 - **현재 위치**: Geolocation API 기반 위치 표시
+- **Viewport 연동**: 지도 이동/줌 시 카드 목록 자동 업데이트
 
 ## Tech Stack
 
@@ -22,10 +25,12 @@
 | Framework | Next.js (App Router, Turbopack) | 16.x |
 | Language | TypeScript (strict) | 5.x |
 | Styling | Tailwind CSS | 4.x |
+| Database | MongoDB | 6.x |
+| Data Caching | SWR | 2.x |
 | Map | react-map-gl + MapLibre GL JS | 8.x / 5.x |
 | Tile Server | OpenFreeMap positron | API 키 불필요 |
 | i18n | next-intl | 4.x |
-| Search | Fuse.js + cmdk | 7.x / 1.x |
+| Search | MongoDB text search + cmdk | - / 1.x |
 | Test | Vitest + Testing Library | 4.x |
 | Deploy | Vercel | - |
 
@@ -57,9 +62,11 @@ npm run test
 
 | 변수 | 용도 | 기본값 |
 |------|------|--------|
+| `MONGODB_URI` | MongoDB 연결 문자열 | - (필수) |
+| `MONGODB_DB` | MongoDB 데이터베이스 이름 | `korea_tourism` |
 | `NEXT_PUBLIC_SITE_URL` | sitemap/robots 베이스 URL | `https://korea-travel-map.vercel.app` |
 
-> MapLibre + OpenFreeMap 사용으로 별도 API 키가 필요하지 않습니다.
+> MapLibre + OpenFreeMap 사용으로 지도 관련 API 키가 필요하지 않습니다.
 
 ## Project Structure
 
@@ -91,12 +98,16 @@ src/
 |----------|--------|------|
 | `/api/pois?locale=ko` | GET | 전체 POI 목록 |
 | `/api/pois/[slug]?locale=ko` | GET | 단일 POI 상세 |
-| `/api/pois/search?q=...&locale=ko` | GET | 퍼지 검색 |
-| `/api/geojson?locale=ko` | GET | GeoJSON FeatureCollection |
+| `/api/pois/search?q=...&locale=ko` | GET | MongoDB text/regex 검색 |
+| `/api/pois/cards?locale=ko&bbox=...&zoom=...&per_category=5` | GET | 카테고리별 카드 (viewport 연동) |
+| `/api/geojson?locale=ko&bbox=...&zoom=...` | GET | GeoJSON (viewport 기반) |
+| `/api/db-setup` | POST | DB 인덱스 셋업 (1회 실행) |
 
 ## Architecture
 
-- **Static-First**: 런타임 DB 없이 JSON 파일로 데이터 관리
+- **MongoDB-backed**: 21,000+ POI 데이터를 MongoDB에서 viewport 기반으로 쿼리
+- **Viewport 기반 로딩**: bbox + zoom으로 보이는 영역만 로드, SWR 캐싱
+- **카테고리별 카드뷰**: 서버사이드 aggregation으로 카테고리별 5개씩 그룹화
 - **URL as State**: URL search params로 필터 상태 관리 (글로벌 상태 라이브러리 없음)
 - **Server → Client 경계**: Server Component → MapShellLoader (client) → MapShell (dynamic, ssr: false)
 - **ISR**: 상세 페이지는 `revalidate=86400`으로 일 1회 재생성
