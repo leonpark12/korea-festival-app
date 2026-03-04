@@ -105,14 +105,23 @@ async function setup() {
         console.log("  ✅ category_1_region_1: 이미 존재");
       }
 
+      // appCategory + region 복합 인덱스
+      if (!indexNames.includes("appCategory_1_region_1")) {
+        console.log("  인덱스 생성 중: appCategory_1_region_1...");
+        await collection.createIndex({ appCategory: 1, region: 1 }, { name: "appCategory_1_region_1" });
+        console.log("  ✅ appCategory_1_region_1 생성 완료");
+      } else {
+        console.log("  ✅ appCategory_1_region_1: 이미 존재");
+      }
+
       // 텍스트 인덱스
       const hasTextIndex = indexes.some((i) => i.name?.includes("text"));
       if (!hasTextIndex) {
         const lang = colName === "pois_kr" ? "none" : "english";
         console.log(`  인덱스 생성 중: text_search (${lang})...`);
         await collection.createIndex(
-          { name: "text", address: "text", tags: "text" },
-          { name: "text_search", weights: { name: 10, tags: 5, address: 1 }, default_language: lang }
+          { name: "text", address: "text", tags: "text", description: "text" },
+          { name: "text_search", weights: { name: 10, tags: 5, description: 3, address: 1 }, default_language: lang }
         );
         console.log("  ✅ text_search 생성 완료");
       } else {
