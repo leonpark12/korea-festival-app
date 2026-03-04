@@ -2,6 +2,9 @@ import type { MetadataRoute } from "next";
 import { getAllPOIs } from "@/lib/data-loader";
 import { routing } from "@/i18n/routing";
 
+// 빌드 타임 정적 생성 방지 → 런타임에 MongoDB 쿼리
+export const dynamic = "force-dynamic";
+
 const BASE_URL = process.env.NEXT_PUBLIC_SITE_URL ?? "https://korea-travel-map.vercel.app";
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
@@ -23,17 +26,21 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     });
   }
 
-  // Spot detail pages (per locale, no cross-locale alternates since slugs differ)
-  for (const locale of routing.locales) {
-    const pois = await getAllPOIs(locale);
-    for (const poi of pois) {
-      entries.push({
-        url: `${BASE_URL}/${locale}/spots/${poi.slug}`,
-        lastModified: new Date(poi.updatedAt),
-        changeFrequency: "monthly",
-        priority: 0.8,
-      });
+  // Spot detail pages (per locale)
+  try {
+    for (const locale of routing.locales) {
+      const pois = await getAllPOIs(locale);
+      for (const poi of pois) {
+        entries.push({
+          url: `${BASE_URL}/${locale}/spots/${poi.slug}`,
+          lastModified: new Date(poi.updatedAt),
+          changeFrequency: "monthly",
+          priority: 0.8,
+        });
+      }
     }
+  } catch (error) {
+    console.error("[sitemap] MongoDB unavailable, returning main pages only:", error);
   }
 
   return entries;

@@ -13,30 +13,33 @@ export async function setupDatabase() {
     const count = await collection.countDocuments();
     results.push(`${col}: ${count} documents`);
 
-    // 1. location GeoJSON 필드 추가 (coordinates → location)
-    const withoutLocation = await collection.countDocuments({
-      location: { $exists: false },
-    });
-
-    if (withoutLocation > 0) {
-      const updateResult = await collection.updateMany(
-        { location: { $exists: false } },
-        [
-          {
-            $set: {
-              location: {
-                type: "Point",
-                coordinates: ["$coordinates.lng", "$coordinates.lat"],
-              },
+    // 1. location GeoJSON 필드 전체 동기화 (coordinates → location)
+    const locationSync = await collection.updateMany(
+      {},
+      [
+        {
+          $set: {
+            location: {
+              type: "Point",
+              coordinates: ["$coordinates.lng", "$coordinates.lat"],
             },
           },
-        ]
-      );
+        },
+      ]
+    );
+    results.push(
+      `  → location 필드 동기화: ${locationSync.modifiedCount}건`
+    );
+
+    // 1-1. mlevel string → number 변환
+    const mlevelFix = await collection.updateMany(
+      { mlevel: { $type: "string" } },
+      [{ $set: { mlevel: { $toInt: "$mlevel" } } }]
+    );
+    if (mlevelFix.modifiedCount > 0) {
       results.push(
-        `  → location 필드 추가: ${updateResult.modifiedCount}건`
+        `  → mlevel 타입 변환: ${mlevelFix.modifiedCount}건`
       );
-    } else {
-      results.push(`  → location 필드: 이미 존재`);
     }
 
     // 2. 인덱스 생성
@@ -67,14 +70,23 @@ export async function setupDatabase() {
       results.push(`  → 인덱스 생성: category_1_region_1`);
     }
 
-    // 텍스트 인덱스 (검색)
+    // appCategory + region 복합 인덱스
+    if (!indexNames.includes("appCategory_1_region_1")) {
+      await collection.createIndex(
+        { appCategory: 1, region: 1 },
+        { name: "appCategory_1_region_1" }
+      );
+      results.push(`  → 인덱스 생성: appCategory_1_region_1`);
+    }
+
+    // 텍스트 인덱스 (검색) — description 포함
     const hasTextIndex = indexes.some((i) => i.name?.includes("text"));
     if (!hasTextIndex) {
       await collection.createIndex(
-        { name: "text", address: "text", tags: "text" },
+        { name: "text", address: "text", tags: "text", description: "text" },
         {
           name: "text_search",
-          weights: { name: 10, tags: 5, address: 1 },
+          weights: { name: 10, tags: 5, description: 3, address: 1 },
           default_language: col === "pois_kr" ? "none" : "english",
         }
       );

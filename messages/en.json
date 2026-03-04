@@ -50,7 +50,13 @@
   },
   "spot": {
     "nearbyTitle": "Nearby Recommended Spots",
-    "noDescription": "Description is not yet available."
+    "noDescription": "Description is not yet available.",
+    "visitInfo": "Visit Info",
+    "facilityInfo": "Facilities",
+    "hours": "Hours",
+    "closedDays": "Closed",
+    "parking": "Parking",
+    "fee": "Fee"
   },
   "common": {
     "close": "Close",

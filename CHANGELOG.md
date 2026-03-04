@@ -6,10 +6,33 @@
 
 ## [Unreleased]
 
+## [0.2.0] - 2026-03-04
+
 ### Added
-- 프로젝트 규칙 문서 (`CLAUDE.md`) 생성
-- 변경 이력 관리 (`CHANGELOG.md`) 도입
-- 프로젝트 README (`README.md`) 생성
+- **`appCategory` 필드**: MongoDB에 앱 카테고리 코드를 직접 저장하여 역매핑 로직 제거
+- **`thumbnail` 필드**: POI 첫 번째 이미지를 별도 필드로 저장 (카드뷰 최적화)
+- **상세 페이지 방문 정보**: `intro` 데이터 활용 — 이용시간, 휴무일, 주차 정보 표시
+- **상세 페이지 시설 안내**: `info` 데이터 활용 — 입장료, 화장실 등 시설 정보 표시
+- **`appCategory_1_region_1` 인덱스**: 카테고리+지역 필터 쿼리 성능 향상
+- **마이그레이션 스크립트** (`scripts/migrate-all.mjs`): 전체 MongoDB 문서 일괄 스키마 변환
+- POI 타입 확장: `POIInfoItem`, `POIIntroItem` 인터페이스 추가
+
+### Changed
+- `data-loader.ts`: `CATEGORY_MAP_*`, `reverseMapCategories()`, `$switch` aggregation 제거 → `appCategory` 직접 쿼리로 단순화
+- `SUMMARY_PROJECTION`에 `thumbnail` 추가, `FULL_PROJECTION`에 `mlevel`/`intro`/`info` 추가
+- `db-setup.ts`: location 필드 전체 동기화 (기존: 미존재 시에만 생성), mlevel 타입 변환 추가
+- 텍스트 검색 인덱스에 `description` 필드 추가 (가중치 3)
+- 상세 페이지 HTML 태그(`<br>`) 줄바꿈 렌더링 처리
+- website URL 파싱 안전 처리 (`safeHostname`/`safeHref`)
+
+### Fixed
+- **좌표 동기화 버그**: `coordinates`와 `location` 필드 불일치 수정 (전체 문서 재동기화)
+- **이미지 URL HTTPS**: `http://` → `https://` 정규화 (mixed content 경고 제거)
+- **mlevel 타입**: `"6"` (string) → `6` (number) 변환
+
+### Performance
+- `getCardsByCategory`: `$addFields + $switch` 단계 제거 → `appCategory` 직접 그룹핑
+- `getGeoJSONByBBox`/`getRegionClusters`: 역매핑 연산 제거로 쿼리 단순화
 
 ## [0.1.0] - 2026-02-17
 

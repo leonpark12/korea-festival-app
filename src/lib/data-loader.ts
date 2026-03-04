@@ -1,56 +1,6 @@
 import { getDb } from "./mongodb";
-import type { POI, POISummary, POIGeoJSON, Category, CategoryCardGroup, RegionCode } from "@/types/poi";
+import type { POI, POISummary, POIGeoJSON, Category, CategoryCardGroup, RegionCode, POIIntroItem, POIInfoItem } from "@/types/poi";
 import type { WithId, Document } from "mongodb";
-
-// ─── Category Mapping ───────────────────────────────────────────────
-
-const CATEGORY_MAP_KR: Record<string, Category> = {
-  역사관광: "culture",
-  문화관광: "culture",
-  자연관광: "nature",
-  "축제/공연/행사": "festival",
-  축제공연행사: "festival",
-  숙박: "accommodation",
-  레저스포츠: "leisure",
-  쇼핑: "shopping",
-  음식: "restaurant",
-  체험관광: "attraction",
-  추천코스: "attraction",
-};
-
-const CATEGORY_MAP_EN: Record<string, Category> = {
-  "Historical Tourism": "culture",
-  "Cultural Tourism": "culture",
-  "Nature Tourism": "nature",
-  "Festivals/Performances/Events": "festival",
-  "Festivals/Events": "festival",
-  Accommodation: "accommodation",
-  "Leisure Sports": "leisure",
-  Shopping: "shopping",
-  Food: "restaurant",
-  "Experiential Tourism": "attraction",
-  "Recommended Course": "attraction",
-};
-
-function mapCategory(raw: string, locale: string): Category {
-  const map = locale === "ko" ? CATEGORY_MAP_KR : CATEGORY_MAP_EN;
-  return map[raw] ?? "attraction";
-}
-
-/**
- * 앱 카테고리 → MongoDB 원본 카테고리 역매핑
- * "culture" → ["역사관광", "문화관광"] (KR) / ["Historical Tourism", "Cultural Tourism"] (EN)
- */
-function reverseMapCategories(appCategories: string[], locale: string): string[] {
-  const map = locale === "ko" ? CATEGORY_MAP_KR : CATEGORY_MAP_EN;
-  const result: string[] = [];
-  for (const [raw, mapped] of Object.entries(map)) {
-    if (appCategories.includes(mapped)) {
-      result.push(raw);
-    }
-  }
-  return result;
-}
 
 // ─── Helpers ────────────────────────────────────────────────────────
 
@@ -70,10 +20,11 @@ const SUMMARY_PROJECTION = {
   slug: 1,
   name: 1,
   address: 1,
-  category: 1,
+  appCategory: 1,
   region: 1,
   coordinates: 1,
-} as const;
+  thumbnail: 1,
+};
 
 const FULL_PROJECTION = {
   _id: 0,
@@ -81,7 +32,7 @@ const FULL_PROJECTION = {
   slug: 1,
   name: 1,
   address: 1,
-  category: 1,
+  appCategory: 1,
   region: 1,
   coordinates: 1,
   description: 1,
@@ -90,35 +41,43 @@ const FULL_PROJECTION = {
   website: 1,
   tags: 1,
   updatedAt: 1,
-} as const;
+  mlevel: 1,
+  intro: 1,
+  info: 1,
+};
 
-function docToPOI(doc: WithId<Document> | Document, locale: string): POI {
+function docToPOI(doc: WithId<Document> | Document): POI {
   return {
     id: doc.id as string,
     slug: doc.slug as string,
     name: doc.name as string,
     address: doc.address as string,
-    category: mapCategory(doc.category as string, locale),
+    category: (doc.appCategory as Category) ?? "attraction",
     region: doc.region as RegionCode,
     coordinates: doc.coordinates as { lat: number; lng: number },
+    thumbnail: (doc.thumbnail as string) || undefined,
     description: (doc.description as string) || undefined,
     images: (doc.images as string[]) || undefined,
     contact: (doc.contact as string) || undefined,
     website: (doc.website as string) || undefined,
     tags: (doc.tags as string[]) || undefined,
     updatedAt: doc.updatedAt as string,
+    mlevel: (doc.mlevel as number) || undefined,
+    intro: (doc.intro as POIIntroItem[]) || undefined,
+    info: (doc.info as POIInfoItem[]) || undefined,
   };
 }
 
-function docToSummary(doc: WithId<Document> | Document, locale: string): POISummary {
+function docToSummary(doc: WithId<Document> | Document): POISummary {
   return {
     id: doc.id as string,
     slug: doc.slug as string,
     name: doc.name as string,
     address: doc.address as string,
-    category: mapCategory(doc.category as string, locale),
+    category: (doc.appCategory as Category) ?? "attraction",
     region: doc.region as RegionCode,
     coordinates: doc.coordinates as { lat: number; lng: number },
+    thumbnail: (doc.thumbnail as string) || undefined,
   };
 }
 
@@ -130,7 +89,7 @@ export async function getAllPOIs(locale: string): Promise<POI[]> {
     .collection(collectionName(locale))
     .find({}, { projection: FULL_PROJECTION })
     .toArray();
-  return docs.map((doc) => docToPOI(doc, locale));
+  return docs.map((doc) => docToPOI(doc));
 }
 
 export async function getAllPOISummaries(locale: string): Promise<POISummary[]> {
@@ -139,7 +98,7 @@ export async function getAllPOISummaries(locale: string): Promise<POISummary[]> 
     .collection(collectionName(locale))
     .find({}, { projection: SUMMARY_PROJECTION })
     .toArray();
-  return docs.map((doc) => docToSummary(doc, locale));
+  return docs.map((doc) => docToSummary(doc));
 }
 
 export async function getPOIBySlug(
@@ -150,7 +109,7 @@ export async function getPOIBySlug(
   const doc = await db
     .collection(collectionName(locale))
     .findOne({ slug }, { projection: FULL_PROJECTION });
-  return doc ? docToPOI(doc, locale) : undefined;
+  return doc ? docToPOI(doc) : undefined;
 }
 
 export async function getAllSlugs(locale: string): Promise<string[]> {
@@ -183,7 +142,7 @@ export async function getGeoJSON(locale: string): Promise<POIGeoJSON> {
       properties: {
         id: doc.id as string,
         slug: doc.slug as string,
-        category: mapCategory(doc.category as string, locale),
+        category: (doc.appCategory as Category) ?? "attraction",
         name: doc.name as string,
         region: doc.region as RegionCode,
       },
@@ -223,11 +182,7 @@ export async function getGeoJSONByBBox(
   };
 
   if (filters?.categories?.length) {
-    // 앱 카테고리 → MongoDB 원본 카테고리로 역매핑
-    const rawCategories = reverseMapCategories(filters.categories, locale);
-    if (rawCategories.length) {
-      query.category = { $in: rawCategories };
-    }
+    query.appCategory = { $in: filters.categories };
   }
   if (filters?.region) {
     query.region = filters.region;
@@ -252,7 +207,7 @@ export async function getGeoJSONByBBox(
       properties: {
         id: doc.id as string,
         slug: doc.slug as string,
-        category: mapCategory(doc.category as string, locale),
+        category: (doc.appCategory as Category) ?? "attraction",
         name: doc.name as string,
         region: doc.region as RegionCode,
       },
@@ -270,11 +225,7 @@ export async function getRegionClusters(
   const db = await getDb();
   const match: Document = {};
   if (filters?.categories?.length) {
-    // 앱 카테고리 → MongoDB 원본 카테고리로 역매핑
-    const rawCategories = reverseMapCategories(filters.categories, locale);
-    if (rawCategories.length) {
-      match.category = { $in: rawCategories };
-    }
+    match.appCategory = { $in: filters.categories };
   }
 
   const pipeline = [
@@ -343,7 +294,7 @@ export async function getNearbyPOIs(
         { $project: { ...FULL_PROJECTION, _dist: 0 } },
       ])
       .toArray();
-    return docs.map((doc) => docToPOI(doc, locale));
+    return docs.map((doc) => docToPOI(doc));
   } catch {
     // Fallback: 2dsphere 인덱스 없을 때 JS 정렬
     const all = await getAllPOIs(locale);
@@ -376,13 +327,6 @@ export async function getCardsByCategory(
   filters?: { categories?: string[]; region?: string }
 ): Promise<{ groups: CategoryCardGroup[]; totalVisible: number }> {
   const db = await getDb();
-  const catMap = locale === "ko" ? CATEGORY_MAP_KR : CATEGORY_MAP_EN;
-
-  // $switch branches for category mapping
-  const switchBranches = Object.entries(catMap).map(([raw, mapped]) => ({
-    case: { $eq: ["$category", raw] },
-    then: mapped,
-  }));
 
   const match: Document = {};
 
@@ -407,10 +351,7 @@ export async function getCardsByCategory(
   }
 
   if (filters?.categories?.length) {
-    const rawCategories = reverseMapCategories(filters.categories, locale);
-    if (rawCategories.length) {
-      match.category = { $in: rawCategories };
-    }
+    match.appCategory = { $in: filters.categories };
   }
   if (filters?.region) {
     match.region = filters.region;
@@ -418,16 +359,6 @@ export async function getCardsByCategory(
 
   const pipeline = [
     ...(Object.keys(match).length ? [{ $match: match }] : []),
-    {
-      $addFields: {
-        appCategory: {
-          $switch: {
-            branches: switchBranches,
-            default: "attraction",
-          },
-        },
-      },
-    },
     {
       $group: {
         _id: "$appCategory",
@@ -440,6 +371,7 @@ export async function getCardsByCategory(
             address: "$address",
             region: "$region",
             coordinates: "$coordinates",
+            thumbnail: "$thumbnail",
           },
         },
       },
@@ -474,6 +406,7 @@ export async function getCardsByCategory(
         category: r.category as Category,
         region: item.region as RegionCode,
         coordinates: item.coordinates as { lat: number; lng: number },
+        thumbnail: (item.thumbnail as string) || undefined,
       })),
     };
   });
@@ -501,7 +434,7 @@ export async function searchPOIs(
       .sort({ score: { $meta: "textScore" } })
       .limit(limit)
       .toArray();
-    return docs.map((doc) => docToSummary(doc, locale));
+    return docs.map((doc) => docToSummary(doc));
   } catch {
     // Fallback: regex 검색
     const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
@@ -513,6 +446,6 @@ export async function searchPOIs(
       )
       .limit(limit)
       .toArray();
-    return docs.map((doc) => docToSummary(doc, locale));
+    return docs.map((doc) => docToSummary(doc));
   }
 }

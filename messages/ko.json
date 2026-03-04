@@ -50,7 +50,13 @@
   },
   "spot": {
     "nearbyTitle": "주변 추천 명소",
-    "noDescription": "설명이 아직 준비되지 않았습니다."
+    "noDescription": "설명이 아직 준비되지 않았습니다.",
+    "visitInfo": "방문 정보",
+    "facilityInfo": "시설 안내",
+    "hours": "이용시간",
+    "closedDays": "휴무일",
+    "parking": "주차",
+    "fee": "입장료"
   },
   "common": {
     "close": "닫기",

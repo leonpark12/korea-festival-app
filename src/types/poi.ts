@@ -33,8 +33,28 @@ export interface POISummary {
   name: string;
   address: string;
   category: Category;
+  appCategory?: Category;
   region: RegionCode;
   coordinates: { lat: number; lng: number };
+  thumbnail?: string;
+}
+
+export interface POIInfoItem {
+  infoname: string;
+  infotext?: string;
+  fldgubun?: string;
+}
+
+export interface POIIntroItem {
+  infocenter?: string;
+  restdate?: string;
+  usetime?: string;
+  parking?: string;
+  expguide?: string;
+  chkbabycarriage?: string;
+  chkcreditcard?: string;
+  opendate?: string;
+  [key: string]: string | undefined;
 }
 
 export interface POI extends POISummary {
@@ -44,6 +64,9 @@ export interface POI extends POISummary {
   website?: string;
   tags?: string[];
   updatedAt: string;
+  mlevel?: number;
+  intro?: POIIntroItem[];
+  info?: POIInfoItem[];
 }
 
 export interface POIGeoJSONProperties {
