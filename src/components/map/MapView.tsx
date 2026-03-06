@@ -7,6 +7,7 @@ import ClusterSource from "./ClusterSource";
 import MapControls from "./MapControls";
 import POIPopup from "./POIPopup";
 import UserLocationMarker from "./UserLocationMarker";
+import SelectedPOIMarker from "./SelectedPOIMarker";
 import { KOREA_CENTER, MAP_STYLE } from "@/lib/constants";
 import type { MapViewState, UserLocation } from "@/types/map";
 import type { POIGeoJSON, POI } from "@/types/poi";
@@ -165,6 +166,7 @@ export default function MapView({
       <ClusterSource data={data} />
       <MapControls showGeolocate={isDesktop} />
       {userLocation && <UserLocationMarker location={userLocation} />}
+      {selectedPOI && <SelectedPOIMarker poi={selectedPOI} />}
       {isDesktop && selectedPOI && (
         <POIPopup poi={selectedPOI} onClose={() => onSelectPOI(null)} />
       )}

@@ -14,7 +14,7 @@ export default function NearbySpots({ pois, locale }: NearbySpotsProps) {
   if (pois.length === 0) return null;
 
   return (
-    <section className="border-t border-border p-4 sm:p-6">
+    <section className="border-t border-border p-4 pb-[max(1rem,env(safe-area-inset-bottom,1rem))] sm:p-6 sm:pb-[max(1.5rem,env(safe-area-inset-bottom,1.5rem))]">
       <h2 className="mb-4 text-lg font-semibold text-foreground">
         {t("nearbyTitle")}
       </h2>

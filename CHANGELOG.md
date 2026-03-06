@@ -6,6 +6,13 @@
 
 ## [Unreleased]
 
+### Added
+- **선택 POI 펄스 마커**: 검색/클릭으로 POI 선택 시 해당 위치에 파란색 펄스 애니메이션 표시 (모바일/데스크탑 모두)
+
+### Fixed
+- **상세 페이지 safe-area 대응**: `h-screen` → `h-dvh`, NearbySpots 하단 `safe-area-inset-bottom` 패딩 추가
+- **viewport-fit cover 설정**: 노치/다이나믹 아일랜드 기기에서 전체 화면 활용
+
 ## [0.4.0] - 2026-03-06
 
 ### Added
