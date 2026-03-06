@@ -14,6 +14,7 @@
 - **JSON-LD 보강**: `inLanguage`, `keywords`(tags) 필드 추가
 - **홈페이지 sr-only h1**: 스크린리더/크롤러용 숨겨진 메인 헤딩 추가
 - **Sitemap spot alternates**: spot 페이지에 ko/en alternates 추가
+- **조회수 트래킹**: `ViewTracker` 컴포넌트 + `POST /api/pois/[slug]/view` API — 세션당 1회 viewCount 증가
 
 ### Changed
 - **맵 나침반 버튼**: `dragRotate` 활성화 + NavigationControl `showCompass` 활성화 — 맵 회전 후 북쪽 리셋 가능
