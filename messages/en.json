@@ -56,7 +56,14 @@
     "hours": "Hours",
     "closedDays": "Closed",
     "parking": "Parking",
-    "fee": "Fee"
+    "fee": "Fee",
+    "petInfo": "Pet-Friendly Info",
+    "petType": "Companion Type",
+    "petEtcInfo": "Additional Info",
+    "petCamping": "Pet-Friendly Camping",
+    "petNeedMtr": "Required Items",
+    "petRiskMtr": "Risk-Related Items",
+    "gallery": "Photos"
   },
   "common": {
     "close": "Close",

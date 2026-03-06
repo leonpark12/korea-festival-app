@@ -6,6 +6,7 @@ import { getPOIBySlug, getNearbyPOIs } from "@/lib/data-loader";
 import type { POI } from "@/types/poi";
 import SpotHero from "@/components/spot/SpotHero";
 import SpotInfo from "@/components/spot/SpotInfo";
+import SpotGallery from "@/components/spot/SpotGallery";
 import SpotJsonLd from "@/components/spot/SpotJsonLd";
 import NearbySpots from "@/components/spot/NearbySpots";
 import BackButton from "@/components/spot/BackButton";
@@ -84,6 +85,9 @@ export default async function SpotPage({ params }: Props) {
         </div>
         <SpotHero poi={poi} locale={loc} />
       </div>
+      {poi.images && poi.images.length > 0 && (
+        <SpotGallery images={poi.images} />
+      )}
       <SpotInfo poi={poi} />
       <Suspense fallback={<NearbySpotsSkeleton />}>
         <NearbySection locale={locale} poi={poi} />
