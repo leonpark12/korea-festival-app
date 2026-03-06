@@ -25,6 +25,7 @@ type Props = {
 
 export const viewport: Viewport = {
   viewportFit: "cover",
+  themeColor: "#003049",
 };
 
 export function generateStaticParams() {
@@ -41,8 +42,8 @@ export async function generateMetadata({
 
   return {
     title: {
-      template: `%s | ${isKo ? "한국 관광 지도" : "Korea Travel Map"}`,
-      default: isKo ? "한국 관광 지도" : "Korea Travel Map",
+      template: "%s | Tour Korea",
+      default: "Tour Korea",
     },
     description: isKo
       ? "지도에서 한국의 관광지, 맛집, 숙박, 쇼핑 명소를 탐색하세요"
@@ -55,7 +56,7 @@ export async function generateMetadata({
       },
     },
     openGraph: {
-      title: isKo ? "한국 관광 지도" : "Korea Travel Map",
+      title: "Tour Korea",
       description: isKo
         ? "지도에서 한국의 관광지, 맛집, 숙박, 쇼핑 명소를 탐색하세요"
         : "Explore Korea's best attractions, restaurants, accommodations, and more",

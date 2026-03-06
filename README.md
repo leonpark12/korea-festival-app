@@ -1,4 +1,4 @@
-# Korea Travel Map
+# Tour Korea
 
 한국 관광지를 인터랙티브 지도에서 탐색할 수 있는 반응형 웹 애플리케이션
 
