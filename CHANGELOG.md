@@ -6,6 +6,29 @@
 
 ## [Unreleased]
 
+## [0.4.0] - 2026-03-06
+
+### Added
+- **Noto Sans KR 한글 폰트**: `next/font/google`로 self-host, font-sans 우선순위 적용
+- **이미지 최적화 설정**: `next.config.ts`에 `images.remotePatterns` 추가 (`tong.visitkorea.or.kr`)
+- **NearbySpots 스켈레톤**: Suspense fallback용 로딩 UI 컴포넌트
+- **POIs API 페이지네이션**: `page`, `limit` 파라미터 지원 (기본 200, 최대 500)
+
+### Changed
+- **`getPOIBySlug` React `cache()` 래핑**: `generateMetadata` + `SpotPage`에서 동일 요청 내 DB 쿼리 dedupe
+- **NearbySpots Suspense 스트리밍**: `NearbySection` 분리 + `<Suspense>`로 메인 콘텐츠 즉시 렌더링
+- **`getNearbyPOIs` 경량화**: `FULL_PROJECTION` → `NEARBY_PROJECTION` 사용, 반환 타입 `POI[]` → `POISummary[]`
+- **`useMediaQuery` lazy initializer**: `useState(false)` → 클라이언트 초기값 즉시 설정으로 CLS 해소
+
+### Removed
+- 루트 `layout.tsx`의 불필요한 Geist 폰트 정의 제거 (locale 레이아웃에서만 관리)
+
+### Performance
+- 상세 페이지 DB 쿼리: 2회 → 1회 (React `cache()` dedupe)
+- NearbyPOIs 전송 데이터: intro/info/images/description 필드 제거 (NEARBY_PROJECTION)
+- NearbySpots 스트리밍: 메인 콘텐츠(SpotHero, SpotInfo) 즉시 렌더링, NearbySpots 비동기 도착
+- CLS 개선: 데스크탑에서 모바일→데스크탑 레이아웃 전환 제거
+
 ## [0.3.0] - 2026-03-06
 
 ### Added

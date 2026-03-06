@@ -3,12 +3,18 @@ import { getMessages, setRequestLocale } from "next-intl/server";
 import { hasLocale } from "next-intl";
 import { notFound } from "next/navigation";
 import { routing } from "@/i18n/routing";
-import { Geist } from "next/font/google";
+import { Geist, Noto_Sans_KR } from "next/font/google";
 import type { Metadata } from "next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
+});
+
+const notoSansKR = Noto_Sans_KR({
+  variable: "--font-noto-kr",
+  subsets: ["latin"],
+  weight: ["400", "700"],
 });
 
 type Props = {
@@ -65,7 +71,7 @@ export default async function LocaleLayout({ children, params }: Props) {
   const messages = await getMessages();
 
   return (
-    <html lang={locale} className={geistSans.variable}>
+    <html lang={locale} className={`${geistSans.variable} ${notoSansKR.variable}`}>
       <body className="h-screen overflow-hidden font-sans antialiased">
         <NextIntlClientProvider messages={messages}>
           {children}

@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { getDb } from "./mongodb";
 import type { POI, POISummary, POIGeoJSON, Category, CategoryCardGroup, RegionCode, POIIntroItem, POIInfoItem } from "@/types/poi";
 import type { WithId, Document } from "mongodb";
@@ -44,6 +45,18 @@ const FULL_PROJECTION = {
   mlevel: 1,
   intro: 1,
   info: 1,
+};
+
+const NEARBY_PROJECTION = {
+  _id: 0,
+  id: 1,
+  slug: 1,
+  name: 1,
+  address: 1,
+  appCategory: 1,
+  region: 1,
+  coordinates: 1,
+  thumbnail: 1,
 };
 
 function docToPOI(doc: WithId<Document> | Document): POI {
@@ -101,16 +114,16 @@ export async function getAllPOISummaries(locale: string): Promise<POISummary[]> 
   return docs.map((doc) => docToSummary(doc));
 }
 
-export async function getPOIBySlug(
+export const getPOIBySlug = cache(async (
   locale: string,
   slug: string
-): Promise<POI | undefined> {
+): Promise<POI | undefined> => {
   const db = await getDb();
   const doc = await db
     .collection(collectionName(locale))
     .findOne({ slug }, { projection: FULL_PROJECTION });
   return doc ? docToPOI(doc) : undefined;
-}
+});
 
 export async function getAllSlugs(locale: string): Promise<string[]> {
   const db = await getDb();
@@ -273,7 +286,7 @@ export async function getNearbyPOIs(
   lng: number,
   excludeSlug: string,
   limit = 4
-): Promise<POI[]> {
+): Promise<POISummary[]> {
   const db = await getDb();
   const col = collectionName(locale);
 
@@ -291,13 +304,13 @@ export async function getNearbyPOIs(
           },
         },
         { $limit: limit },
-        { $project: { ...FULL_PROJECTION, _dist: 0 } },
+        { $project: { ...NEARBY_PROJECTION, _dist: 0 } },
       ])
       .toArray();
-    return docs.map((doc) => docToPOI(doc));
+    return docs.map((doc) => docToSummary(doc));
   } catch {
     // Fallback: 2dsphere 인덱스 없을 때 JS 정렬
-    const all = await getAllPOIs(locale);
+    const all = await getAllPOISummaries(locale);
     return all
       .filter((poi) => poi.slug !== excludeSlug)
       .map((poi) => ({

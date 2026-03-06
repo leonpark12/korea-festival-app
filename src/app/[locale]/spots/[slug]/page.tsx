@@ -1,7 +1,9 @@
+import { Suspense } from "react";
 import { notFound } from "next/navigation";
 import { setRequestLocale } from "next-intl/server";
 import type { Metadata } from "next";
 import { getPOIBySlug, getNearbyPOIs } from "@/lib/data-loader";
+import type { POI } from "@/types/poi";
 import SpotHero from "@/components/spot/SpotHero";
 import SpotInfo from "@/components/spot/SpotInfo";
 import SpotJsonLd from "@/components/spot/SpotJsonLd";
@@ -36,6 +38,32 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
   };
 }
 
+async function NearbySection({ locale, poi }: { locale: string; poi: POI }) {
+  const nearby = await getNearbyPOIs(
+    locale,
+    poi.coordinates.lat,
+    poi.coordinates.lng,
+    poi.slug
+  );
+  return <NearbySpots pois={nearby} locale={locale as "ko" | "en"} />;
+}
+
+function NearbySpotsSkeleton() {
+  return (
+    <section className="border-t border-border p-4 sm:p-6">
+      <div className="mb-4 h-6 w-32 animate-pulse rounded bg-muted" />
+      <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+        {Array.from({ length: 4 }).map((_, i) => (
+          <div
+            key={i}
+            className="h-20 animate-pulse rounded-xl border border-border bg-muted/50"
+          />
+        ))}
+      </div>
+    </section>
+  );
+}
+
 export default async function SpotPage({ params }: Props) {
   const { locale, slug } = await params;
   setRequestLocale(locale);
@@ -44,12 +72,6 @@ export default async function SpotPage({ params }: Props) {
   if (!poi) notFound();
 
   const loc = locale as "ko" | "en";
-  const nearby = await getNearbyPOIs(
-    locale,
-    poi.coordinates.lat,
-    poi.coordinates.lng,
-    poi.slug
-  );
 
   return (
     <div className="h-screen overflow-y-auto overscroll-y-contain bg-white">
@@ -63,7 +85,9 @@ export default async function SpotPage({ params }: Props) {
         <SpotHero poi={poi} locale={loc} />
       </div>
       <SpotInfo poi={poi} />
-      <NearbySpots pois={nearby} locale={loc} />
+      <Suspense fallback={<NearbySpotsSkeleton />}>
+        <NearbySection locale={locale} poi={poi} />
+      </Suspense>
     </div>
   );
 }
