@@ -40,7 +40,7 @@ const securityHeaders = [
       "worker-src 'self' blob:",
       "child-src 'self' blob:",
       "style-src 'self' 'unsafe-inline'",
-      "img-src 'self' data: blob: https://tong.visitkorea.or.kr https://*.openfreemap.org https://*.tile.openstreetmap.org",
+      "img-src 'self' data: blob: https://tong.visitkorea.or.kr http://tong.visitkorea.or.kr https://*.openfreemap.org https://*.tile.openstreetmap.org",
       "font-src 'self' data: https://tiles.openfreemap.org",
       "connect-src 'self' https://tiles.openfreemap.org https://*.openfreemap.org",
       "frame-ancestors 'self'",

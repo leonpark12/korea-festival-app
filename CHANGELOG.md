@@ -8,10 +8,23 @@
 
 ### Added
 - **선택 POI 펄스 마커**: 검색/클릭으로 POI 선택 시 해당 위치에 파란색 펄스 애니메이션 표시 (모바일/데스크탑 모두)
+- **상세 페이지 이미지 갤러리**: SpotGallery 컴포넌트 — 가로 스크롤 snap, lazy loading, 에러 핸들링
+- **상세 페이지 반려동물 동반 정보**: pet 데이터(동반 유형, 기타 정보, 캠핑, 필요 자재, 위험 자재) 표시
+- **POIPetInfo 타입**: `src/types/poi.ts`에 반려동물 정보 인터페이스 추가
+- **regions.json center/bbox**: 17개 시도별 중심 좌표 및 bbox 추가 (region 클러스터 고정 좌표용)
+- **i18n pet/gallery 키**: ko/en 번역 파일에 반려동물·갤러리 관련 7개 키 추가
+
+### Changed
+- **Region 클러스터 좌표**: POI 평균 좌표 → regions.json 고정 center 좌표 사용 (안정적 표시)
+- **data-loader**: FULL_PROJECTION에 pet/detailPetUpdated 필드 추가, docToPOI 매핑 추가
+- **db-setup**: `category_1_region_1` 인덱스 제거 → `region_1` 단일 인덱스로 교체
 
 ### Fixed
 - **상세 페이지 safe-area 대응**: `h-screen` → `h-dvh`, NearbySpots 하단 `safe-area-inset-bottom` 패딩 추가
 - **viewport-fit cover 설정**: 노치/다이나믹 아일랜드 기기에서 전체 화면 활용
+
+### Security
+- **CSP img-src**: `http://tong.visitkorea.or.kr` 추가 (HTTP 이미지 허용)
 
 ## [0.4.0] - 2026-03-06
 

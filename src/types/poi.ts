@@ -57,6 +57,14 @@ export interface POIIntroItem {
   [key: string]: string | undefined;
 }
 
+export interface POIPetInfo {
+  acmpyTypeCd?: string;
+  etcAcmpyInfo?: string;
+  acmpyPsblCpam?: string;
+  acmpyNeedMtr?: string;
+  relaAcdntRiskMtr?: string;
+}
+
 export interface POI extends POISummary {
   description?: string;
   images?: string[];
@@ -67,6 +75,8 @@ export interface POI extends POISummary {
   mlevel?: number;
   intro?: POIIntroItem[];
   info?: POIInfoItem[];
+  pet?: POIPetInfo;
+  detailPetUpdated?: boolean;
 }
 
 export interface POIGeoJSONProperties {

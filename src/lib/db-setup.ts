@@ -61,13 +61,19 @@ export async function setupDatabase() {
       results.push(`  → 인덱스 생성: slug_1 (unique)`);
     }
 
-    // category + region 복합 인덱스 (필터링)
-    if (!indexNames.includes("category_1_region_1")) {
+    // 기존 미사용 category_1_region_1 인덱스 제거
+    if (indexNames.includes("category_1_region_1")) {
+      await collection.dropIndex("category_1_region_1");
+      results.push(`  → 인덱스 제거: category_1_region_1 (미사용)`);
+    }
+
+    // region 단일 인덱스 (region별 그룹/필터 쿼리)
+    if (!indexNames.includes("region_1")) {
       await collection.createIndex(
-        { category: 1, region: 1 },
-        { name: "category_1_region_1" }
+        { region: 1 },
+        { name: "region_1" }
       );
-      results.push(`  → 인덱스 생성: category_1_region_1`);
+      results.push(`  → 인덱스 생성: region_1`);
     }
 
     // appCategory + region 복합 인덱스

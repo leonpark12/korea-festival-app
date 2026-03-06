@@ -56,7 +56,14 @@
     "hours": "이용시간",
     "closedDays": "휴무일",
     "parking": "주차",
-    "fee": "입장료"
+    "fee": "입장료",
+    "petInfo": "반려동물 동반 정보",
+    "petType": "동반 유형",
+    "petEtcInfo": "기타 동반 정보",
+    "petCamping": "동반 가능 캠핑",
+    "petNeedMtr": "동반 필요 자재",
+    "petRiskMtr": "관련 사고 위험 자재",
+    "gallery": "사진"
   },
   "common": {
     "close": "닫기",

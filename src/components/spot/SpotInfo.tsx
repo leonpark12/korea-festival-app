@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import type { POI } from "@/types/poi";
+import type { POI, POIPetInfo } from "@/types/poi";
 
 interface SpotInfoProps {
   poi: POI;
@@ -50,6 +50,15 @@ export default function SpotInfo({ poi }: SpotInfoProps) {
     intro && (intro.usetime || intro.restdate || intro.parking);
   const infoItems = poi.info?.filter((item) => item.infoname && item.infotext);
   const hasInfoItems = infoItems && infoItems.length > 0;
+
+  const petFields: { key: keyof POIPetInfo; emoji: string; labelKey: string }[] = [
+    { key: "acmpyTypeCd", emoji: "\uD83D\uDC3E", labelKey: "petType" },
+    { key: "etcAcmpyInfo", emoji: "\uD83D\uDCCB", labelKey: "petEtcInfo" },
+    { key: "acmpyPsblCpam", emoji: "\u26FA", labelKey: "petCamping" },
+    { key: "acmpyNeedMtr", emoji: "\uD83C\uDF92", labelKey: "petNeedMtr" },
+    { key: "relaAcdntRiskMtr", emoji: "\u26A0\uFE0F", labelKey: "petRiskMtr" },
+  ];
+  const hasPetInfo = poi.pet && petFields.some((f) => poi.pet?.[f.key]);
 
   return (
     <div className="space-y-6 p-4 sm:p-6">
@@ -133,6 +142,35 @@ export default function SpotInfo({ poi }: SpotInfoProps) {
                 </div>
               </div>
             ))}
+          </div>
+        </section>
+      )}
+
+      {/* Pet Info */}
+      {hasPetInfo && (
+        <section>
+          <h2 className="mb-3 text-lg font-semibold text-foreground">
+            {tSpot("petInfo")}
+          </h2>
+          <div className="rounded-lg border border-border bg-muted/30 divide-y divide-border">
+            {petFields.map(
+              (field) =>
+                poi.pet?.[field.key] && (
+                  <div key={field.key} className="flex items-start gap-3 px-4 py-3">
+                    <span className="mt-0.5 shrink-0 text-base text-muted-foreground">
+                      {field.emoji}
+                    </span>
+                    <div className="min-w-0">
+                      <p className="text-xs font-medium text-muted-foreground">
+                        {tSpot(field.labelKey)}
+                      </p>
+                      <p className="text-sm text-foreground">
+                        {renderHtmlText(poi.pet[field.key]!)}
+                      </p>
+                    </div>
+                  </div>
+                )
+            )}
           </div>
         </section>
       )}

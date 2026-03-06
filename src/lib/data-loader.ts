@@ -1,6 +1,7 @@
 import { cache } from "react";
 import { getDb } from "./mongodb";
-import type { POI, POISummary, POIGeoJSON, Category, CategoryCardGroup, RegionCode, POIIntroItem, POIInfoItem } from "@/types/poi";
+import type { POI, POISummary, POIGeoJSON, Category, CategoryCardGroup, RegionCode, POIIntroItem, POIInfoItem, POIPetInfo } from "@/types/poi";
+import regionsData from "@/data/regions.json";
 import type { WithId, Document } from "mongodb";
 
 // ─── Helpers ────────────────────────────────────────────────────────
@@ -45,6 +46,8 @@ const FULL_PROJECTION = {
   mlevel: 1,
   intro: 1,
   info: 1,
+  pet: 1,
+  detailPetUpdated: 1,
 };
 
 const NEARBY_PROJECTION = {
@@ -78,6 +81,8 @@ function docToPOI(doc: WithId<Document> | Document): POI {
     mlevel: (doc.mlevel as number) || undefined,
     intro: (doc.intro as POIIntroItem[]) || undefined,
     info: (doc.info as POIInfoItem[]) || undefined,
+    pet: (doc.pet as POIPetInfo) || undefined,
+    detailPetUpdated: (doc.detailPetUpdated as boolean) || undefined,
   };
 }
 
@@ -241,14 +246,17 @@ export async function getRegionClusters(
     match.appCategory = { $in: filters.categories };
   }
 
+  // regions.json의 center 좌표를 룩업 맵으로 구축
+  const regionCenterMap = new Map(
+    regionsData.map((r) => [r.code, r.center as [number, number]])
+  );
+
   const pipeline = [
     ...(Object.keys(match).length ? [{ $match: match }] : []),
     {
       $group: {
         _id: "$region",
         count: { $sum: 1 },
-        lat: { $avg: "$coordinates.lat" },
-        lng: { $avg: "$coordinates.lng" },
       },
     },
   ];
@@ -260,23 +268,28 @@ export async function getRegionClusters(
 
   return {
     type: "FeatureCollection",
-    features: results.map((r) => ({
-      type: "Feature" as const,
-      geometry: {
-        type: "Point" as const,
-        coordinates: [r.lng as number, r.lat as number] as [number, number],
-      },
-      properties: {
-        id: r._id as string,
-        slug: r._id as string,
-        category: "attraction" as Category,
-        name: r._id as string,
-        region: r._id as RegionCode,
-        cluster: true,
-        point_count: r.count as number,
-        point_count_abbreviated: abbreviateCount(r.count as number),
-      },
-    })),
+    features: results
+      .filter((r) => regionCenterMap.has(r._id as string))
+      .map((r) => {
+        const center = regionCenterMap.get(r._id as string)!;
+        return {
+          type: "Feature" as const,
+          geometry: {
+            type: "Point" as const,
+            coordinates: center,
+          },
+          properties: {
+            id: r._id as string,
+            slug: r._id as string,
+            category: "attraction" as Category,
+            name: r._id as string,
+            region: r._id as RegionCode,
+            cluster: true,
+            point_count: r.count as number,
+            point_count_abbreviated: abbreviateCount(r.count as number),
+          },
+        };
+      }),
   };
 }
 
