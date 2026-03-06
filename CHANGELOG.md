@@ -20,6 +20,7 @@
 - **db-setup**: `category_1_region_1` 인덱스 제거 → `region_1` 단일 인덱스로 교체
 
 ### Fixed
+- **상세 페이지 intro 필드 매핑**: contentTypeId별 intro 필드명 대응 — 문화시설(14), 축제(15), 숙박(32), 쇼핑(38), 음식점(39), 레포츠(28) 카테고리에서 영업시간/휴무일/주차 정보 표시
 - **상세 페이지 safe-area 대응**: `h-screen` → `h-dvh`, NearbySpots 하단 `safe-area-inset-bottom` 패딩 추가
 - **viewport-fit cover 설정**: 노치/다이나믹 아일랜드 기기에서 전체 화면 활용
 

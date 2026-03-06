@@ -1,5 +1,5 @@
 import { useTranslations } from "next-intl";
-import type { POI, POIPetInfo } from "@/types/poi";
+import type { POI, POIPetInfo, POIIntroItem } from "@/types/poi";
 
 interface SpotInfoProps {
   poi: POI;
@@ -41,13 +41,26 @@ function safeHref(url: string): string {
   return url.startsWith("http") ? url : `https://${url}`;
 }
 
+/** intro 객체에서 시간/휴무/주차 정보를 추출 (contentType별 필드명 대응) */
+function extractVisitInfo(intro: POIIntroItem) {
+  const usetime = intro.usetime || intro.usetimeculture || intro.usetimefestival
+    || intro.opentime || intro.opentimefood || intro.usetimeleports
+    || intro.checkintime;
+  const restdate = intro.restdate || intro.restdateculture || intro.restdateshopping
+    || intro.restdatefood || intro.restdateleports;
+  const parking = intro.parking || intro.parkingculture || intro.parkingshopping
+    || intro.parkingfood || intro.parkingleports || intro.parkinglodging;
+  return { usetime, restdate, parking };
+}
+
 export default function SpotInfo({ poi }: SpotInfoProps) {
   const t = useTranslations("poi");
   const tSpot = useTranslations("spot");
 
   const intro = poi.intro?.[0];
+  const visitInfo = intro ? extractVisitInfo(intro) : null;
   const hasVisitInfo =
-    intro && (intro.usetime || intro.restdate || intro.parking);
+    visitInfo && (visitInfo.usetime || visitInfo.restdate || visitInfo.parking);
   const infoItems = poi.info?.filter((item) => item.infoname && item.infotext);
   const hasInfoItems = infoItems && infoItems.length > 0;
 
@@ -79,7 +92,7 @@ export default function SpotInfo({ poi }: SpotInfoProps) {
             {tSpot("visitInfo")}
           </h2>
           <div className="rounded-lg border border-border bg-muted/30 divide-y divide-border">
-            {intro.usetime && (
+            {visitInfo.usetime && (
               <div className="flex items-start gap-3 px-4 py-3">
                 <span className="mt-0.5 shrink-0 text-base text-muted-foreground">
                   &#x1F553;
@@ -88,11 +101,11 @@ export default function SpotInfo({ poi }: SpotInfoProps) {
                   <p className="text-xs font-medium text-muted-foreground">
                     {tSpot("hours")}
                   </p>
-                  <p className="text-sm text-foreground">{renderHtmlText(intro.usetime)}</p>
+                  <p className="text-sm text-foreground">{renderHtmlText(visitInfo.usetime)}</p>
                 </div>
               </div>
             )}
-            {intro.restdate && (
+            {visitInfo.restdate && (
               <div className="flex items-start gap-3 px-4 py-3">
                 <span className="mt-0.5 shrink-0 text-base text-muted-foreground">
                   &#x1F4C5;
@@ -101,11 +114,11 @@ export default function SpotInfo({ poi }: SpotInfoProps) {
                   <p className="text-xs font-medium text-muted-foreground">
                     {tSpot("closedDays")}
                   </p>
-                  <p className="text-sm text-foreground">{renderHtmlText(intro.restdate)}</p>
+                  <p className="text-sm text-foreground">{renderHtmlText(visitInfo.restdate)}</p>
                 </div>
               </div>
             )}
-            {intro.parking && (
+            {visitInfo.parking && (
               <div className="flex items-start gap-3 px-4 py-3">
                 <span className="mt-0.5 shrink-0 text-base text-muted-foreground">
                   &#x1F17F;
@@ -114,7 +127,7 @@ export default function SpotInfo({ poi }: SpotInfoProps) {
                   <p className="text-xs font-medium text-muted-foreground">
                     {tSpot("parking")}
                   </p>
-                  <p className="text-sm text-foreground">{renderHtmlText(intro.parking)}</p>
+                  <p className="text-sm text-foreground">{renderHtmlText(visitInfo.parking)}</p>
                 </div>
               </div>
             )}
