@@ -21,7 +21,10 @@ export async function setupDatabase() {
           $set: {
             location: {
               type: "Point",
-              coordinates: ["$coordinates.lng", "$coordinates.lat"],
+              coordinates: [
+                { $toDouble: "$coordinates.lng" },
+                { $toDouble: "$coordinates.lat" },
+              ],
             },
           },
         },

@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- **db-setup location 좌표 타입**: `$toDouble`로 `coordinates.lng`/`coordinates.lat` 숫자 변환 — 문자열 좌표로 인한 2dsphere 인덱스 오류(`$geoNear` invalid type) 해결
+
 ### Added
 - **Vercel Web Analytics**: `@vercel/analytics` 패키지 추가 — Vercel 대시보드에서 방문자/페이지뷰 실시간 확인
 - **hreflang alternates**: spot 상세 페이지에 ko/en 언어 교차 링크 추가 (Google 다국어 페이지 연결)
