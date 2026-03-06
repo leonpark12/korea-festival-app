@@ -74,7 +74,7 @@ export default async function SpotPage({ params }: Props) {
   const loc = locale as "ko" | "en";
 
   return (
-    <div className="h-screen overflow-y-auto overscroll-y-contain bg-white">
+    <div className="h-dvh overflow-y-auto overscroll-y-contain bg-white">
       <SpotJsonLd poi={poi} />
 
       <div className="relative">
