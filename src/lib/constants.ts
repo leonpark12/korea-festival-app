@@ -19,3 +19,6 @@ export const BREAKPOINTS = {
 } as const;
 
 export const SIDE_PANEL_WIDTH = 384; // w-96
+
+export const BOTTOM_SHEET_HEIGHT = 120;
+export const BOTTOM_SHEET_SELECTED_HEIGHT = 200;

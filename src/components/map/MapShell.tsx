@@ -12,7 +12,7 @@ import { usePOIData } from "@/hooks/usePOIData";
 import { useQueryParams } from "@/hooks/useQueryParams";
 import { usePOISearch } from "@/hooks/usePOISearch";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
-import { KOREA_CENTER } from "@/lib/constants";
+import { KOREA_CENTER, BOTTOM_SHEET_HEIGHT } from "@/lib/constants";
 import type { MapViewState, UserLocation } from "@/types/map";
 import type { POI, POISummary } from "@/types/poi";
 import type { MapRef } from "react-map-gl/maplibre";
@@ -89,7 +89,7 @@ function MapShellInner() {
   );
 
   const handleSelectPOI = useCallback(
-    (slug: string | null) => {
+    (slug: string | null, coordinates?: { lat: number; lng: number }) => {
       setFilter("selectedPOI", slug);
       if (slug) {
         // geojson features에서 slug로 좌표 조회
@@ -98,6 +98,13 @@ function MapShellInner() {
           const [lng, lat] = feature.geometry.coordinates;
           mapRef.current?.flyTo({
             center: [lng, lat],
+            zoom: Math.max(zoomRef.current, 13),
+            duration: 500,
+          });
+        } else if (coordinates) {
+          // viewport 밖 POI: 전달된 좌표로 flyTo
+          mapRef.current?.flyTo({
+            center: [coordinates.lng, coordinates.lat],
             zoom: Math.max(zoomRef.current, 13),
             duration: 500,
           });
@@ -126,7 +133,7 @@ function MapShellInner() {
   );
 
   const handlePanelSelectPOI = useCallback(
-    (slug: string) => handleSelectPOI(slug),
+    (slug: string, coordinates?: { lat: number; lng: number }) => handleSelectPOI(slug, coordinates),
     [handleSelectPOI]
   );
 
@@ -169,7 +176,7 @@ function MapShellInner() {
       {/* Map */}
       <div
         className="absolute inset-0 pt-14"
-        style={isDesktop ? { paddingLeft: "384px" } : undefined}
+        style={isDesktop ? { paddingLeft: "384px" } : { paddingBottom: BOTTOM_SHEET_HEIGHT + "px" }}
       >
         <MapView
           data={geojson}

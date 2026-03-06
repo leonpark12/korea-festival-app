@@ -7,7 +7,7 @@ import type { POISummary } from "@/types/poi";
 
 interface POICardProps {
   poi: POISummary;
-  onSelect: (slug: string) => void;
+  onSelect: (slug: string, coordinates?: { lat: number; lng: number }) => void;
   isSelected?: boolean;
 }
 
@@ -18,7 +18,7 @@ export default memo(function POICard({ poi, onSelect, isSelected }: POICardProps
 
   return (
     <button
-      onClick={() => onSelect(poi.slug)}
+      onClick={() => onSelect(poi.slug, poi.coordinates)}
       aria-selected={isSelected}
       aria-label={`${poi.name} - ${cat.label[locale]}`}
       className={`w-full rounded-xl border p-3 text-left transition-all hover:shadow-md ${

@@ -1,9 +1,17 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getGeoJSON, getGeoJSONByBBox, getRegionClusters } from "@/lib/data-loader";
+import { parseLocale, checkRateLimit } from "@/lib/api-utils";
 
 export async function GET(request: NextRequest) {
+  // Rate limit: 1분에 120회
+  const rateLimited = checkRateLimit(request, "geojson", {
+    windowMs: 60_000,
+    max: 120,
+  });
+  if (rateLimited) return rateLimited;
+
   const sp = request.nextUrl.searchParams;
-  const locale = sp.get("locale") ?? "ko";
+  const locale = parseLocale(sp.get("locale"));
   const bbox = sp.get("bbox");
   const zoom = parseFloat(sp.get("zoom") ?? "7");
 
@@ -18,7 +26,7 @@ export async function GET(request: NextRequest) {
 
     if (bbox) {
       const parts = bbox.split(",").map(Number);
-      if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
+      if (parts.length === 4 && parts.every((n) => !isNaN(n) && isFinite(n))) {
         const [west, south, east, north] = parts as [number, number, number, number];
 
         if (zoom < 10) {

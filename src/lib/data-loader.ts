@@ -420,11 +420,12 @@ export async function searchPOIs(
   limit = 10
 ): Promise<POISummary[]> {
   const db = await getDb();
+  const col = collectionName(locale);
 
   try {
     // $text 인덱스 사용 시도
     const docs = await db
-      .collection(collectionName(locale))
+      .collection(col)
       .find(
         { $text: { $search: query } },
         {
@@ -434,18 +435,24 @@ export async function searchPOIs(
       .sort({ score: { $meta: "textScore" } })
       .limit(limit)
       .toArray();
-    return docs.map((doc) => docToSummary(doc));
+
+    // $text 결과가 있으면 반환, 없으면 regex fallback
+    if (docs.length > 0) {
+      return docs.map((doc) => docToSummary(doc));
+    }
   } catch {
-    // Fallback: regex 검색
-    const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
-    const docs = await db
-      .collection(collectionName(locale))
-      .find(
-        { $or: [{ name: regex }, { address: regex }, { tags: regex }] },
-        { projection: SUMMARY_PROJECTION }
-      )
-      .limit(limit)
-      .toArray();
-    return docs.map((doc) => docToSummary(doc));
+    // $text 인덱스 없을 때 → regex fallback
   }
+
+  // Fallback: regex 부분 매칭 검색
+  const regex = new RegExp(query.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i");
+  const docs = await db
+    .collection(col)
+    .find(
+      { $or: [{ name: regex }, { address: regex }, { tags: regex }] },
+      { projection: SUMMARY_PROJECTION }
+    )
+    .limit(limit)
+    .toArray();
+  return docs.map((doc) => docToSummary(doc));
 }

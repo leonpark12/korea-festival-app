@@ -11,7 +11,7 @@
 - **카테고리별 카드뷰**: 8개 카테고리별 5개씩 그룹화하여 표시
 - **카테고리 필터**: 관광지, 맛집, 숙박, 쇼핑, 축제, 문화, 자연, 레저
 - **지역 필터**: 17개 시/도 단위 필터링
-- **퍼지 검색**: MongoDB text search + cmdk 커맨드 팔레트
+- **검색**: MongoDB text/regex 검색 + 디바운스 + cmdk 커맨드 팔레트
 - **다국어**: 한국어/영어 (next-intl, URL prefix 방식)
 - **반응형 레이아웃**: 데스크톱 사이드패널 / 모바일 바텀시트
 - **상세 페이지**: POI별 ISR 페이지 (SEO 최적화, JSON-LD)
@@ -66,6 +66,7 @@ npm run test
 | `MONGODB_URI` | MongoDB 연결 문자열 | - (필수) |
 | `MONGODB_DB` | MongoDB 데이터베이스 이름 | `korea_tourism` |
 | `NEXT_PUBLIC_SITE_URL` | sitemap/robots 베이스 URL | `https://korea-travel-map.vercel.app` |
+| `DB_SETUP_SECRET` | db-setup API 인증 토큰 | - (db-setup 사용 시 필수) |
 
 > MapLibre + OpenFreeMap 사용으로 지도 관련 API 키가 필요하지 않습니다.
 
@@ -103,6 +104,14 @@ src/
 | `/api/pois/cards?locale=ko&bbox=...&zoom=...&per_category=5` | GET | 카테고리별 카드 (viewport 연동) |
 | `/api/geojson?locale=ko&bbox=...&zoom=...` | GET | GeoJSON (viewport 기반) |
 | `/api/db-setup` | POST | DB 인덱스 셋업 (1회 실행) |
+
+## Security
+
+- **CSP / HSTS**: Content-Security-Policy, Strict-Transport-Security 등 보안 헤더 적용
+- **API Rate Limiting**: 인메모리 rate limiter (60~120 req/min, 엔드포인트별 차등)
+- **입력 검증**: locale 화이트리스트, bbox 유효성 검사, limit 범위 제한
+- **XSS 방지**: JSON-LD 이스케이프, URL 프로토콜 검증 (`javascript:`, `data:` 차단)
+- **DB 보호**: db-setup Bearer 토큰 인증, 에러 메시지 제네릭화
 
 ## Architecture
 

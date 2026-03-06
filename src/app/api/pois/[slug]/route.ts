@@ -1,11 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getPOIBySlug } from "@/lib/data-loader";
+import { parseLocale, checkRateLimit } from "@/lib/api-utils";
 
 export async function GET(
   request: NextRequest,
   { params }: { params: Promise<{ slug: string }> }
 ) {
-  const locale = request.nextUrl.searchParams.get("locale") ?? "ko";
+  // Rate limit: 1분에 120회
+  const rateLimited = checkRateLimit(request, "pois-slug", {
+    windowMs: 60_000,
+    max: 120,
+  });
+  if (rateLimited) return rateLimited;
+
+  const locale = parseLocale(request.nextUrl.searchParams.get("locale"));
   const { slug } = await params;
 
   const poi = await getPOIBySlug(locale, slug);
