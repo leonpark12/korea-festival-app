@@ -12,7 +12,13 @@ export async function POST(request: NextRequest) {
 
   const secret = process.env.DB_SETUP_SECRET;
   if (!secret) {
-    return NextResponse.json({ error: "Setup disabled" }, { status: 403 });
+    return NextResponse.json({
+      error: "Setup disabled",
+      debug: {
+        hasSecret: !!secret,
+        envKeys: Object.keys(process.env).filter(k => k.includes("DB_")),
+      },
+    }, { status: 403 });
   }
 
   // Authorization 헤더에서 Bearer 토큰 검증
