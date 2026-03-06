@@ -7,6 +7,7 @@
 ## [Unreleased]
 
 ### Added
+- **Vercel Web Analytics**: `@vercel/analytics` 패키지 추가 — Vercel 대시보드에서 방문자/페이지뷰 실시간 확인
 - **hreflang alternates**: spot 상세 페이지에 ko/en 언어 교차 링크 추가 (Google 다국어 페이지 연결)
 - **Twitter Card 메타데이터**: 레이아웃 + 상세 페이지에 `summary_large_image` Twitter Card 추가
 - **Gallery alt 텍스트**: 빈 alt → `{POI명} {번호}` 형식으로 접근성 및 이미지 SEO 개선
