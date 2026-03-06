@@ -8,6 +8,9 @@
 
 ### Added
 - **Google Analytics 4**: GA4 트래킹 스크립트 적용 (`G-HCLFZ3XDK6`, `kr-tour.com` 도메인)
+
+### Fixed
+- **CSP GA4 차단 수정**: `script-src`에 `googletagmanager.com`, `connect-src`에 `google-analytics.com` 도메인 허용
 - **선택 POI 펄스 마커**: 검색/클릭으로 POI 선택 시 해당 위치에 파란색 펄스 애니메이션 표시 (모바일/데스크탑 모두)
 - **상세 페이지 이미지 갤러리**: SpotGallery 컴포넌트 — 가로 스크롤 snap, lazy loading, 에러 핸들링
 - **상세 페이지 반려동물 동반 정보**: pet 데이터(동반 유형, 기타 정보, 캠핑, 필요 자재, 위험 자재) 표시
