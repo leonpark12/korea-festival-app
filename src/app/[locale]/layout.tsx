@@ -63,6 +63,13 @@ export async function generateMetadata({
       locale: locale === "ko" ? "ko_KR" : "en_US",
       type: "website",
     },
+    twitter: {
+      card: "summary_large_image",
+      title: "Tour Korea",
+      description: isKo
+        ? "지도에서 한국의 관광지, 맛집, 숙박, 쇼핑 명소를 탐색하세요"
+        : "Explore Korea's best attractions, restaurants, accommodations, and more on an interactive map",
+    },
   };
 }
 

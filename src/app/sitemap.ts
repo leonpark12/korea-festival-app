@@ -36,6 +36,12 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
           lastModified: new Date(poi.updatedAt),
           changeFrequency: "monthly",
           priority: 0.8,
+          alternates: {
+            languages: {
+              ko: `${BASE_URL}/ko/spots/${poi.slug}`,
+              en: `${BASE_URL}/en/spots/${poi.slug}`,
+            },
+          },
         });
       }
     }

@@ -6,6 +6,15 @@
 
 ## [Unreleased]
 
+### Added
+- **hreflang alternates**: spot 상세 페이지에 ko/en 언어 교차 링크 추가 (Google 다국어 페이지 연결)
+- **Twitter Card 메타데이터**: 레이아웃 + 상세 페이지에 `summary_large_image` Twitter Card 추가
+- **Gallery alt 텍스트**: 빈 alt → `{POI명} {번호}` 형식으로 접근성 및 이미지 SEO 개선
+- **description 폴백 개선**: HTML 스트립 + intro 필드(이용시간 등) 활용으로 더 풍부한 메타 설명 생성
+- **JSON-LD 보강**: `inLanguage`, `keywords`(tags) 필드 추가
+- **홈페이지 sr-only h1**: 스크린리더/크롤러용 숨겨진 메인 헤딩 추가
+- **Sitemap spot alternates**: spot 페이지에 ko/en alternates 추가
+
 ### Changed
 - **맵 나침반 버튼**: `dragRotate` 활성화 + NavigationControl `showCompass` 활성화 — 맵 회전 후 북쪽 리셋 가능
 - **마커/라벨 단계적 전환**: `CLUSTER_MAX_ZOOM` 14→12, `CLUSTER_RADIUS` 50→40, 라벨 `minzoom` 14→13 — zoom 12에서 개별 마커, zoom 13에서 라벨 시작
