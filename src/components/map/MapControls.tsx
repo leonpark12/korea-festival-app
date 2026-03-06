@@ -14,7 +14,7 @@ export default function MapControls({ showGeolocate = true }: MapControlsProps) 
           style={{ marginBottom: 80 }}
         />
       )}
-      <NavigationControl position="bottom-right" showCompass={false} />
+      <NavigationControl position="bottom-right" showCompass={true} />
     </>
   );
 }
