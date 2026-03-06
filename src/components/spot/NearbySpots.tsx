@@ -1,10 +1,10 @@
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CATEGORY_MAP } from "@/lib/categories";
-import type { POI } from "@/types/poi";
+import type { POISummary } from "@/types/poi";
 
 interface NearbySpotsProps {
-  pois: POI[];
+  pois: POISummary[];
   locale: "ko" | "en";
 }
 

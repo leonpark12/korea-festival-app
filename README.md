@@ -25,7 +25,7 @@
 |------|------|------|
 | Framework | Next.js (App Router, Turbopack) | 16.x |
 | Language | TypeScript (strict) | 5.x |
-| Styling | Tailwind CSS | 4.x |
+| Styling | Tailwind CSS + Noto Sans KR | 4.x |
 | Database | MongoDB | 6.x |
 | Data Caching | SWR | 2.x |
 | Map | react-map-gl + MapLibre GL JS | 8.x / 5.x |
@@ -98,7 +98,7 @@ src/
 
 | Endpoint | Method | 설명 |
 |----------|--------|------|
-| `/api/pois?locale=ko` | GET | 전체 POI 목록 |
+| `/api/pois?locale=ko&page=1&limit=200` | GET | POI 목록 (페이지네이션) |
 | `/api/pois/[slug]?locale=ko` | GET | 단일 POI 상세 |
 | `/api/pois/search?q=...&locale=ko` | GET | MongoDB text/regex 검색 |
 | `/api/pois/cards?locale=ko&bbox=...&zoom=...&per_category=5` | GET | 카테고리별 카드 (viewport 연동) |
