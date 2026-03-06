@@ -6,6 +6,10 @@
 
 ## [Unreleased]
 
+### Changed
+- **맵 나침반 버튼**: `dragRotate` 활성화 + NavigationControl `showCompass` 활성화 — 맵 회전 후 북쪽 리셋 가능
+- **마커/라벨 단계적 전환**: `CLUSTER_MAX_ZOOM` 14→12, `CLUSTER_RADIUS` 50→40, 라벨 `minzoom` 14→13 — zoom 12에서 개별 마커, zoom 13에서 라벨 시작
+
 ### Added
 - **브랜딩 색상 팔레트**: Lemon Meringue + Prussian Blue 5색 팔레트 적용 (primary, accent, warm, danger, surface 토큰)
 - **SVG 로고**: 이모지 → Prussian Blue 원 + Gold 지도핀 인라인 SVG

@@ -8,8 +8,8 @@ export const KOREA_CENTER: MapViewState = {
 
 export const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 
-export const CLUSTER_MAX_ZOOM = 14;
-export const CLUSTER_RADIUS = 50;
+export const CLUSTER_MAX_ZOOM = 12;
+export const CLUSTER_RADIUS = 40;
 
 export const BREAKPOINTS = {
   sm: 640,

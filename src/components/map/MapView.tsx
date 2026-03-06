@@ -155,7 +155,7 @@ export default function MapView({
       style={{ width: "100%", height: "100%" }}
       minZoom={5.5}
       maxZoom={18}
-      dragRotate={false}
+      dragRotate={true}
       touchPitch={false}
       maxBounds={[
         [122, 32],
