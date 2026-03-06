@@ -30,6 +30,14 @@ function safeHostname(url: string): string {
 }
 
 function safeHref(url: string): string {
+  const trimmed = url.trim().toLowerCase();
+  if (
+    trimmed.startsWith("javascript:") ||
+    trimmed.startsWith("data:") ||
+    trimmed.startsWith("vbscript:")
+  ) {
+    return "#";
+  }
   return url.startsWith("http") ? url : `https://${url}`;
 }
 

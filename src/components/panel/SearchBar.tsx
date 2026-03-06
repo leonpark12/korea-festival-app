@@ -9,7 +9,7 @@ import type { POISummary } from "@/types/poi";
 interface SearchBarProps {
   onSearch: (query: string) => void;
   searchResults: POISummary[];
-  onSelect: (slug: string) => void;
+  onSelect: (slug: string, coordinates?: { lat: number; lng: number }) => void;
   isOpen?: boolean;
   onOpenChange?: (open: boolean) => void;
 }
@@ -32,8 +32,20 @@ export default function SearchBar({
   const onSearchRef = useRef(onSearch);
   onSearchRef.current = onSearch;
 
+  // 검색 결과 선택 시 setQuery("")가 트리거하는 search effect를 스킵
+  // (router.replace 경합으로 poi param이 사라지는 것 방지)
+  const skipSearchRef = useRef(false);
+
   useEffect(() => {
-    onSearchRef.current(query);
+    if (skipSearchRef.current) {
+      skipSearchRef.current = false;
+      return;
+    }
+    // 디바운스: 타이핑 중 불필요한 API 호출 방지 + 응답 순서 경합 해결
+    const timer = setTimeout(() => {
+      onSearchRef.current(query);
+    }, 300);
+    return () => clearTimeout(timer);
   }, [query]);
 
   return (
@@ -66,7 +78,8 @@ export default function SearchBar({
                     key={poi.id}
                     value={poi.slug}
                     onSelect={() => {
-                      onSelect(poi.slug);
+                      skipSearchRef.current = true;
+                      onSelect(poi.slug, poi.coordinates);
                       setOpen(false);
                       setQuery("");
                     }}

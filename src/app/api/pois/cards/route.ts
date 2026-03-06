@@ -1,12 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getCardsByCategory } from "@/lib/data-loader";
+import { parseLocale, checkRateLimit } from "@/lib/api-utils";
 
 export async function GET(request: NextRequest) {
+  // Rate limit: 1분에 120회
+  const rateLimited = checkRateLimit(request, "pois-cards", {
+    windowMs: 60_000,
+    max: 120,
+  });
+  if (rateLimited) return rateLimited;
+
   const sp = request.nextUrl.searchParams;
-  const locale = sp.get("locale") ?? "ko";
+  const locale = parseLocale(sp.get("locale"));
   const bbox = sp.get("bbox");
   const zoom = parseFloat(sp.get("zoom") ?? "7");
-  const perCategory = Math.min(parseInt(sp.get("per_category") ?? "5", 10), 20);
+  const perCategory = Math.max(1, Math.min(parseInt(sp.get("per_category") ?? "5", 10) || 5, 20));
 
   // 카테고리/지역 필터
   const categoriesParam = sp.get("categories");
@@ -19,7 +27,7 @@ export async function GET(request: NextRequest) {
 
     if (bbox && zoom >= 10) {
       const parts = bbox.split(",").map(Number);
-      if (parts.length === 4 && parts.every((n) => !isNaN(n))) {
+      if (parts.length === 4 && parts.every((n) => !isNaN(n) && isFinite(n))) {
         parsedBbox = parts as [number, number, number, number];
       }
     }

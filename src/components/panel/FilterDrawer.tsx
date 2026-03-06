@@ -20,7 +20,7 @@ interface FilterDrawerProps {
   selectedSlug?: string | null;
   searchResults?: POISummary[];
   onSearch?: (query: string) => void;
-  onSelectPOI?: (slug: string) => void;
+  onSelectPOI?: (slug: string, coordinates?: { lat: number; lng: number }) => void;
 }
 
 export default function FilterDrawer({
@@ -57,8 +57,8 @@ export default function FilterDrawer({
   const hasFilters = selectedCategories.length > 0 || selectedRegion !== null;
 
   const handleSelectAndClose = useCallback(
-    (slug: string) => {
-      onSelectPOI?.(slug);
+    (slug: string, coordinates?: { lat: number; lng: number }) => {
+      onSelectPOI?.(slug, coordinates);
       onClose();
     },
     [onSelectPOI, onClose]

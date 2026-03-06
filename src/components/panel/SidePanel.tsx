@@ -15,7 +15,7 @@ interface SidePanelProps {
   onSearch: (query: string) => void;
   onToggleCategory: (cat: string) => void;
   onSelectRegion: (region: string | null) => void;
-  onSelectPOI: (slug: string) => void;
+  onSelectPOI: (slug: string, coordinates?: { lat: number; lng: number }) => void;
 }
 
 export default function SidePanel({

@@ -6,6 +6,36 @@
 
 ## [Unreleased]
 
+## [0.3.0] - 2026-03-06
+
+### Added
+- **보안 헤더**: CSP, HSTS, X-Frame-Options 등 종합 보안 헤더 적용 (`next.config.ts`)
+- **API Rate Limiting**: 모든 API 엔드포인트에 인메모리 rate limiter 적용 (60~120 req/min)
+- **API 입력 검증**: locale 화이트리스트, bbox `isFinite()` 체크, limit/per_category 범위 제한
+- **db-setup 인증**: Bearer 토큰 인증 + rate limit (3 req/min)
+- **검색 디바운스**: 300ms 디바운스로 불필요한 API 호출 방지
+- **검색 stale 응답 무시**: 요청 카운터로 이전 요청 응답이 최신 결과를 덮어쓰는 것 방지
+- **검색 좌표 전달**: viewport 밖 POI 검색 클릭 시에도 `flyTo` 동작
+- **모바일 하단 패딩**: BottomSheet 높이만큼 맵 하단 여백 추가 (제주도 가려짐 해결)
+- `src/lib/rate-limit.ts`: TTL 기반 인메모리 rate limiter
+- `src/lib/api-utils.ts`: `parseLocale()`, `getClientIP()`, `checkRateLimit()` 유틸리티
+
+### Changed
+- `searchPOIs`: MongoDB `$text` 결과가 비어도 regex fallback으로 부분 매칭 지원
+- `BottomSheet`: 매직넘버 → `BOTTOM_SHEET_HEIGHT` / `BOTTOM_SHEET_SELECTED_HEIGHT` 상수 사용
+
+### Fixed
+- **검색 클릭 무응답**: geojson viewport 밖 POI 클릭 시 좌표 fallback으로 `flyTo` 실행
+- **모바일 팝업 중복**: 모바일에서 POIPopup + BottomSheet 동시 표시 → BottomSheet만 표시
+- **검색 경합 조건**: `setFilter` 2회 호출로 URL params 덮어쓰기 → `skipSearchRef` 패턴 적용
+- **부분 검색 미작동**: "성산일출" → "성산일출봉" 검색 가능 (regex fallback 개선)
+- **검색 응답 순서 경합**: 느린 이전 응답이 최신 결과 덮어쓰기 → 디바운스 + requestId 적용
+
+### Security
+- XSS 방지: `SpotJsonLd`에서 `<` → `\u003c` 이스케이프
+- URL 프로토콜 검증: `safeHref()`에서 `javascript:`, `data:`, `vbscript:` 차단
+- API 에러 메시지 제네릭화: DB 에러 상세 노출 방지
+
 ## [0.2.0] - 2026-03-04
 
 ### Added

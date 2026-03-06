@@ -9,7 +9,7 @@ interface POICardListProps {
   groups: CategoryCardGroup[];
   totalVisible: number;
   selectedSlug: string | null;
-  onSelect: (slug: string) => void;
+  onSelect: (slug: string, coordinates?: { lat: number; lng: number }) => void;
 }
 
 export default function POICardList({
