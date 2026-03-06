@@ -10,6 +10,7 @@ import SpotGallery from "@/components/spot/SpotGallery";
 import SpotJsonLd from "@/components/spot/SpotJsonLd";
 import NearbySpots from "@/components/spot/NearbySpots";
 import BackButton from "@/components/spot/BackButton";
+import ViewTracker from "@/components/spot/ViewTracker";
 
 // ISR: 상세 페이지를 빌드 타임에 생성하지 않고, 첫 방문 시 생성 후 24시간 캐시
 export const dynamicParams = true;
@@ -19,22 +20,55 @@ type Props = {
   params: Promise<{ locale: string; slug: string }>;
 };
 
+function buildDescription(poi: POI): string {
+  if (poi.description) {
+    const plain = poi.description.replace(/<[^>]+>/g, "").trim();
+    return plain.length > 160 ? plain.slice(0, 157) + "..." : plain;
+  }
+  const parts = [poi.name, poi.address];
+  const intro = poi.intro?.[0];
+  if (intro) {
+    const usetime =
+      intro.usetime ||
+      intro.usetimeculture ||
+      intro.usetimefestival ||
+      intro.opentime ||
+      intro.opentimefood;
+    if (usetime) {
+      const plain = usetime.replace(/<[^>]+>/g, "").trim();
+      if (plain.length < 60) parts.push(plain);
+    }
+  }
+  return parts.join(" - ");
+}
+
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { locale, slug } = await params;
   const poi = await getPOIBySlug(locale, slug);
   if (!poi) return {};
 
+  const desc = buildDescription(poi);
+
   return {
     title: poi.name,
-    description: poi.description ?? `${poi.name} - ${poi.address}`,
+    description: desc,
     alternates: {
       canonical: `/${locale}/spots/${slug}`,
+      languages: {
+        ko: `/ko/spots/${slug}`,
+        en: `/en/spots/${slug}`,
+      },
     },
     openGraph: {
       title: poi.name,
-      description: poi.description ?? `${poi.name} - ${poi.address}`,
+      description: desc,
       locale: locale === "ko" ? "ko_KR" : "en_US",
       type: "article",
+    },
+    twitter: {
+      card: "summary_large_image",
+      title: poi.name,
+      description: desc,
     },
   };
 }
@@ -76,7 +110,8 @@ export default async function SpotPage({ params }: Props) {
 
   return (
     <div className="h-dvh overflow-y-auto overscroll-y-contain bg-white">
-      <SpotJsonLd poi={poi} />
+      <ViewTracker slug={slug} />
+      <SpotJsonLd poi={poi} locale={loc} />
 
       <div className="relative">
         {/* Back button */}
@@ -86,7 +121,7 @@ export default async function SpotPage({ params }: Props) {
         <SpotHero poi={poi} locale={loc} />
       </div>
       {poi.images && poi.images.length > 0 && (
-        <SpotGallery images={poi.images} />
+        <SpotGallery images={poi.images} poiName={poi.name} />
       )}
       <SpotInfo poi={poi} />
       <Suspense fallback={<NearbySpotsSkeleton />}>

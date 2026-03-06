@@ -2,14 +2,16 @@ import type { POI } from "@/types/poi";
 
 interface SpotJsonLdProps {
   poi: POI;
+  locale: "ko" | "en";
 }
 
-export default function SpotJsonLd({ poi }: SpotJsonLdProps) {
+export default function SpotJsonLd({ poi, locale }: SpotJsonLdProps) {
   const jsonLd = {
     "@context": "https://schema.org",
     "@type": "TouristAttraction",
     name: poi.name,
     description: poi.description ?? "",
+    inLanguage: locale === "ko" ? "ko" : "en",
     address: {
       "@type": "PostalAddress",
       streetAddress: poi.address,
@@ -26,6 +28,7 @@ export default function SpotJsonLd({ poi }: SpotJsonLdProps) {
       poi.images.length > 0 && {
         image: poi.images,
       }),
+    ...(poi.tags?.length && { keywords: poi.tags.join(", ") }),
   };
 
   return (

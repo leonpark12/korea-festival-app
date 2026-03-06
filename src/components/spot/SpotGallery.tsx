@@ -6,9 +6,10 @@ import { useTranslations } from "next-intl";
 
 interface SpotGalleryProps {
   images: string[];
+  poiName: string;
 }
 
-export default function SpotGallery({ images }: SpotGalleryProps) {
+export default function SpotGallery({ images, poiName }: SpotGalleryProps) {
   const t = useTranslations("spot");
   const [failedIndexes, setFailedIndexes] = useState<Set<number>>(new Set());
 
@@ -38,7 +39,7 @@ export default function SpotGallery({ images }: SpotGalleryProps) {
             >
               <Image
                 src={src}
-                alt=""
+                alt={`${poiName} ${index + 1}`}
                 fill
                 unoptimized
                 loading="lazy"
