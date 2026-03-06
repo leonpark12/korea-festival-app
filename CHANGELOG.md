@@ -7,7 +7,21 @@
 ## [Unreleased]
 
 ### Added
+- **브랜딩 색상 팔레트**: Lemon Meringue + Prussian Blue 5색 팔레트 적용 (primary, accent, warm, danger, surface 토큰)
+- **SVG 로고**: 이모지 → Prussian Blue 원 + Gold 지도핀 인라인 SVG
+- **Favicon**: `icon.tsx` (32x32) + `apple-icon.tsx` (180x180) — ImageResponse 프로그래매틱 생성
+- **OG 이미지**: `opengraph-image.tsx` (1200x630) — Prussian Blue 배경 + 로고 + 앱 이름
+- **Web Manifest**: `manifest.ts` — PWA 지원 (theme_color, background_color, icons)
 - **Google Analytics 4**: GA4 트래킹 스크립트 적용 (`G-HCLFZ3XDK6`, `kr-tour.com` 도메인)
+
+### Changed
+- **사이트 이름 변경**: "Korea Travel Map" / "한국 관광 지도" → "Tour Korea" (전체 통일)
+- **클러스터 색상**: 기본 3색 → Gold(`#fcbf49`), Orange(`#f77f00`), Red(`#d62828`)
+- **theme-color**: viewport에 `themeColor: "#003049"` 추가
+- **프록시 매처**: `/icon`, `/apple-icon`, `/opengraph-image`, `/manifest` 경로 i18n 제외
+
+### Removed
+- **favicon.ico**: 프로그래매틱 `icon.tsx`로 대체
 
 ### Fixed
 - **CSP GA4 차단 수정**: `script-src`에 `googletagmanager.com`, `connect-src`에 `google-analytics.com` 도메인 허용

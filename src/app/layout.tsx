@@ -3,8 +3,8 @@ import "./globals.css";
 
 export const metadata: Metadata = {
   title: {
-    template: "%s | Korea Travel Map",
-    default: "Korea Travel Map",
+    template: "%s | Tour Korea",
+    default: "Tour Korea",
   },
   description:
     "Explore Korea's best attractions, restaurants, accommodations, and more on an interactive map",
