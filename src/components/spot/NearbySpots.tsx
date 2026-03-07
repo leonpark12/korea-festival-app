@@ -1,11 +1,18 @@
+import Image from "next/image";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import { CATEGORY_MAP } from "@/lib/categories";
-import type { POISummary } from "@/types/poi";
+import type { NearbyPOI } from "@/types/poi";
 
 interface NearbySpotsProps {
-  pois: POISummary[];
+  pois: NearbyPOI[];
   locale: "ko" | "en";
+}
+
+function formatDistance(meters?: number): string | null {
+  if (meters == null) return null;
+  if (meters < 1000) return `${Math.round(meters)}m`;
+  return `${(meters / 1000).toFixed(1)}km`;
 }
 
 export default function NearbySpots({ pois, locale }: NearbySpotsProps) {
@@ -21,27 +28,49 @@ export default function NearbySpots({ pois, locale }: NearbySpotsProps) {
       <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
         {pois.map((poi) => {
           const cat = CATEGORY_MAP[poi.category];
+          const dist = formatDistance(poi.distance);
           return (
             <Link
               key={poi.id}
               href={`/spots/${poi.slug}`}
-              className="rounded-xl border border-border p-3 transition-colors hover:border-primary/30 hover:bg-muted/50"
+              className="flex items-start gap-3 rounded-xl border border-border p-3 transition-colors hover:border-primary/30 hover:bg-muted/50"
             >
-              <div className="mb-1 flex items-center gap-1.5">
-                <span className="text-xs">{cat.icon}</span>
+              {poi.thumbnail ? (
+                <Image
+                  src={poi.thumbnail}
+                  alt={poi.name}
+                  width={64}
+                  height={64}
+                  className="h-16 w-16 shrink-0 rounded-lg object-cover"
+                />
+              ) : (
                 <span
-                  className="text-[11px] font-medium"
-                  style={{ color: cat.color }}
+                  className="flex h-16 w-16 shrink-0 items-center justify-center rounded-lg text-xl"
+                  style={{ backgroundColor: cat.color + "20" }}
                 >
-                  {cat.label[locale]}
+                  {cat.icon}
                 </span>
+              )}
+              <div className="min-w-0 flex-1">
+                <p className="text-sm font-semibold text-foreground">
+                  {poi.name}
+                </p>
+                {poi.description && poi.description !== poi.name && (
+                  <p className="mt-0.5 line-clamp-1 text-xs text-muted-foreground">
+                    {poi.description}
+                  </p>
+                )}
+                <p className="mt-1 flex items-center gap-1 text-xs text-muted-foreground">
+                  <span className="text-[10px]">{cat.icon}</span>
+                  <span style={{ color: cat.color }}>{cat.label[locale]}</span>
+                  {dist && (
+                    <>
+                      <span>·</span>
+                      <span>{dist}</span>
+                    </>
+                  )}
+                </p>
               </div>
-              <p className="text-sm font-semibold text-foreground">
-                {poi.name}
-              </p>
-              <p className="line-clamp-1 text-xs text-muted-foreground">
-                {poi.address}
-              </p>
             </Link>
           );
         })}

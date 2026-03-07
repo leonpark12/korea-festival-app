@@ -39,7 +39,7 @@ export default memo(function POICard({ poi, onSelect, isSelected }: POICardProps
           {cat.label[locale]}
         </span>
       </div>
-      <h3 className="mb-0.5 text-sm font-semibold text-foreground">
+      <h3 className="mb-1 text-sm font-semibold text-foreground">
         {poi.name}
       </h3>
       <p className="line-clamp-1 text-xs text-muted-foreground">
