@@ -1,6 +1,6 @@
 import { cache } from "react";
 import { getDb } from "./mongodb";
-import type { POI, POISummary, POIGeoJSON, Category, CategoryCardGroup, RegionCode, POIIntroItem, POIInfoItem, POIPetInfo } from "@/types/poi";
+import type { POI, POISummary, NearbyPOI, POIGeoJSON, Category, CategoryCardGroup, RegionCode, POIIntroItem, POIInfoItem, POIPetInfo } from "@/types/poi";
 import regionsData from "@/data/regions.json";
 import type { WithId, Document } from "mongodb";
 
@@ -60,6 +60,7 @@ const NEARBY_PROJECTION = {
   region: 1,
   coordinates: 1,
   thumbnail: 1,
+  description: 1,
 };
 
 function docToPOI(doc: WithId<Document> | Document): POI {
@@ -293,13 +294,21 @@ export async function getRegionClusters(
   };
 }
 
+function docToNearbyPOI(doc: WithId<Document> | Document, distanceMeters?: number): NearbyPOI {
+  return {
+    ...docToSummary(doc),
+    description: (doc.description as string) || undefined,
+    distance: distanceMeters,
+  };
+}
+
 export async function getNearbyPOIs(
   locale: string,
   lat: number,
   lng: number,
   excludeSlug: string,
   limit = 4
-): Promise<POISummary[]> {
+): Promise<NearbyPOI[]> {
   const db = await getDb();
   const col = collectionName(locale);
 
@@ -317,25 +326,37 @@ export async function getNearbyPOIs(
           },
         },
         { $limit: limit },
-        { $project: { ...NEARBY_PROJECTION, _dist: 0 } },
+        { $project: { ...NEARBY_PROJECTION, _dist: 1 } },
       ])
       .toArray();
-    return docs.map((doc) => docToSummary(doc));
+    return docs.map((doc) => docToNearbyPOI(doc, doc._dist as number));
   } catch {
-    // Fallback: 2dsphere 인덱스 없을 때 JS 정렬
-    const all = await getAllPOISummaries(locale);
-    return all
-      .filter((poi) => poi.slug !== excludeSlug)
-      .map((poi) => ({
-        poi,
-        dist: Math.hypot(
-          poi.coordinates.lat - lat,
-          poi.coordinates.lng - lng
-        ),
-      }))
+    // Fallback: 2dsphere 인덱스 없을 때 JS 정렬 + Haversine 거리 계산
+    const db2 = await getDb();
+    const allDocs = await db2
+      .collection(col)
+      .find({ slug: { $ne: excludeSlug } }, { projection: NEARBY_PROJECTION })
+      .toArray();
+
+    const toRad = (deg: number) => (deg * Math.PI) / 180;
+    const haversine = (lat1: number, lng1: number, lat2: number, lng2: number) => {
+      const R = 6371000;
+      const dLat = toRad(lat2 - lat1);
+      const dLng = toRad(lng2 - lng1);
+      const a =
+        Math.sin(dLat / 2) ** 2 +
+        Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * Math.sin(dLng / 2) ** 2;
+      return R * 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    };
+
+    return allDocs
+      .map((doc) => {
+        const coords = doc.coordinates as { lat: number; lng: number };
+        return { doc, dist: haversine(lat, lng, coords.lat, coords.lng) };
+      })
       .sort((a, b) => a.dist - b.dist)
       .slice(0, limit)
-      .map((item) => item.poi);
+      .map((item) => docToNearbyPOI(item.doc, item.dist));
   }
 }
 

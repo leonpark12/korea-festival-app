@@ -6,6 +6,14 @@
 
 ## [Unreleased]
 
+### Changed
+- **NearbySpots 카드 리디자인**: 상세 페이지 주변 관광지 카드에 64x64 thumbnail, description(1줄), 카테고리+거리 정보 표시
+  - `NearbyPOI` 타입 추가 (description, distance 필드)
+  - `getNearbyPOIs`에서 `$geoNear` 거리 데이터 반환 + fallback Haversine 거리 계산
+  - thumbnail 없을 때 카테고리 아이콘 placeholder 표시
+  - description이 name과 동일할 때 숨김 처리
+- **POICard/POIPreviewCard 원복**: 사이드패널 카드에서 thumbnail 제거, 텍스트 전용 구조 복원
+
 ### Added
 - **상세 페이지 intro 섹션 확장**: contentTypeId별 전용 섹션 표시
   - 축제(15): 행사 기간, 장소, 프로그램, 주최/주관

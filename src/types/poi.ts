@@ -236,6 +236,11 @@ export interface POIPetInfo {
   relaRntlPrdlst?: string;
 }
 
+export interface NearbyPOI extends POISummary {
+  description?: string;
+  distance?: number; // meters
+}
+
 export interface POI extends POISummary {
   description?: string;
   images?: string[];
