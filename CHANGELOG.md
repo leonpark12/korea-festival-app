@@ -6,6 +6,11 @@
 
 ## [Unreleased]
 
+### Fixed
+- **지도 회전 비활성화**: 모바일 핀치 줌 시 bearing(북향)이 틀어지는 문제 수정
+  - `touchZoomRotate.disableRotation()`으로 터치 줌 시 회전만 비활성화 (줌은 정상 동작)
+  - `dragRotate={false}`로 데스크톱 우클릭 드래그 회전도 비활성화
+
 ### Changed
 - **NearbySpots 카드 리디자인**: 상세 페이지 주변 관광지 카드에 64x64 thumbnail, description(1줄), 카테고리+거리 정보 표시
   - `NearbyPOI` 타입 추가 (description, distance 필드)
