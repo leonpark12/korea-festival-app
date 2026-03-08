@@ -123,12 +123,15 @@ export default function MapView({
     onViewportChange(vs, getBounds(map));
   }, [onViewportChange]);
 
-  // 맵 초기 로드 완료 시 viewport 데이터 로드
+  // 맵 초기 로드 완료 시 viewport 데이터 로드 + 모바일 회전 비활성화
   const onLoad = useCallback(() => {
-    if (!onViewportChange) return;
     const map = mapRef.current?.getMap();
     if (!map) return;
 
+    // 모바일 핀치 줌 시 회전(bearing 변경) 비활성화
+    map.touchZoomRotate.disableRotation();
+
+    if (!onViewportChange) return;
     const vs: MapViewState = {
       longitude: map.getCenter().lng,
       latitude: map.getCenter().lat,
@@ -155,7 +158,7 @@ export default function MapView({
       style={{ width: "100%", height: "100%" }}
       minZoom={5.5}
       maxZoom={18}
-      dragRotate={true}
+      dragRotate={false}
       touchPitch={false}
       maxBounds={[
         [122, 32],
