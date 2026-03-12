@@ -7,6 +7,7 @@ import { Geist, Noto_Sans_KR } from "next/font/google";
 import type { Metadata, Viewport } from "next";
 import GoogleAnalytics from "@/components/GoogleAnalytics";
 import { Analytics } from "@vercel/analytics/next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -89,6 +90,7 @@ export default async function LocaleLayout({ children, params }: Props) {
       <body className="h-screen overflow-hidden font-sans antialiased">
         <GoogleAnalytics />
         <Analytics />
+        <SpeedInsights />
         <NextIntlClientProvider messages={messages}>
           {children}
         </NextIntlClientProvider>

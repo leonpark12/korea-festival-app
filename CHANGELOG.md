@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### Added
+- **Vercel Speed Insights**: `@vercel/speed-insights` 추가하여 실사용자 Core Web Vitals (LCP, FID, CLS, INP) 데이터 수집
+
 ### Fixed
 - **지도 회전 비활성화**: 모바일 핀치 줌 시 bearing(북향)이 틀어지는 문제 수정
   - `touchZoomRotate.disableRotation()`으로 터치 줌 시 회전만 비활성화 (줌은 정상 동작)
