@@ -46,7 +46,9 @@
     "nearby": "주변 관광지",
     "viewDetail": "상세보기",
     "openInMaps": "지도 앱으로 열기",
-    "back": "돌아가기"
+    "back": "돌아가기",
+    "dataSource": "자료",
+    "dataSourceValue": "한국관광공사 · 공공데이터포털"
   },
   "spot": {
     "nearbyTitle": "주변 추천 명소",
@@ -121,6 +123,7 @@
   "common": {
     "close": "닫기",
     "loading": "로딩 중...",
-    "error": "오류가 발생했습니다"
+    "error": "오류가 발생했습니다",
+    "dataAttribution": "관광 데이터: ⓒ한국관광공사"
   }
 }

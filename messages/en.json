@@ -46,7 +46,9 @@
     "nearby": "Nearby Places",
     "viewDetail": "View Details",
     "openInMaps": "Open in Maps",
-    "back": "Back"
+    "back": "Back",
+    "dataSource": "Data",
+    "dataSourceValue": "Korea Tourism Organization"
   },
   "spot": {
     "nearbyTitle": "Nearby Recommended Spots",
@@ -121,6 +123,7 @@
   "common": {
     "close": "Close",
     "loading": "Loading...",
-    "error": "An error occurred"
+    "error": "An error occurred",
+    "dataAttribution": "Tourism Data: ⓒKorea Tourism Organization"
   }
 }

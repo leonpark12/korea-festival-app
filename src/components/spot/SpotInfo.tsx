@@ -631,7 +631,20 @@ export default function SpotInfo({ poi }: SpotInfoProps) {
         )}
       </section>
 
-      {/* 14. CTA + Tags */}
+      {/* 14. Data Source */}
+      <div className="flex items-start gap-3">
+        <span className="mt-0.5 text-lg">&#x1F4CB;</span>
+        <div>
+          <p className="text-xs font-medium text-muted-foreground">
+            {t("dataSource")}
+          </p>
+          <p className="text-sm text-foreground">
+            {t("dataSourceValue")}
+          </p>
+        </div>
+      </div>
+
+      {/* 15. CTA + Tags */}
       <a
         href={`https://maps.google.com/maps?q=${poi.coordinates.lat},${poi.coordinates.lng}`}
         target="_blank"
