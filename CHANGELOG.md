@@ -6,6 +6,12 @@
 
 ## [Unreleased]
 
+### Changed
+- **POI 상세 페이지 데이터 출처 표시 변경**: 태그 옆 인라인 텍스트 → 주소/웹사이트와 동일한 정보 항목 형태로 변경
+  - 📋 자료 / 한국관광공사 · 공공데이터포털 (ko) | Data / Korea Tourism Organization (en)
+  - "지도 앱으로 열기" 버튼 위에 배치
+  - 태그 영역 원복 (태그만 표시)
+
 ### Added
 - **Vercel Speed Insights**: `@vercel/speed-insights` 추가하여 실사용자 Core Web Vitals (LCP, FID, CLS, INP) 데이터 수집
 
