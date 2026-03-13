@@ -239,12 +239,15 @@ export async function getGeoJSONByBBox(
  */
 export async function getRegionClusters(
   locale: string,
-  filters?: { categories?: string[] }
+  filters?: { categories?: string[]; region?: string }
 ): Promise<POIGeoJSON> {
   const db = await getDb();
   const match: Document = {};
   if (filters?.categories?.length) {
     match.appCategory = { $in: filters.categories };
+  }
+  if (filters?.region) {
+    match.region = filters.region;
   }
 
   // regions.json의 center 좌표를 룩업 맵으로 구축
