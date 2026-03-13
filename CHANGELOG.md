@@ -7,6 +7,14 @@
 ## [Unreleased]
 
 ### Changed
+- **모바일 바텀시트 광고 영역 제거**: POI 미선택 시 빈 광고 자리표시자 대신 바텀시트 자체를 숨김 처리
+  - 지도 하단 패딩 및 GeolocateFAB 오프셋 조정
+- **region 클러스터 필터 확장**: `getRegionClusters`에 `region` 필터 파라미터 추가
+
+### Removed
+- **레거시 정적 JSON 데이터 파일 삭제**: MongoDB 전환 완료로 `src/data/pois_*.json`, `pois_geo_*.json` 제거
+
+### Changed
 - **POI 상세 페이지 데이터 출처 표시 변경**: 태그 옆 인라인 텍스트 → 주소/웹사이트와 동일한 정보 항목 형태로 변경
   - 📋 자료 / 한국관광공사 · 공공데이터포털 (ko) | Data / Korea Tourism Organization (en)
   - "지도 앱으로 열기" 버튼 위에 배치

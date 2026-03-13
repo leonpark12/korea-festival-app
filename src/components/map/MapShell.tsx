@@ -176,7 +176,7 @@ function MapShellInner() {
       {/* Map */}
       <div
         className="absolute inset-0 pt-14"
-        style={isDesktop ? { paddingLeft: "384px" } : { paddingBottom: BOTTOM_SHEET_HEIGHT + "px" }}
+        style={isDesktop ? { paddingLeft: "384px" } : selectedPOI ? { paddingBottom: BOTTOM_SHEET_HEIGHT + "px" } : undefined}
       >
         <MapView
           data={geojson}
@@ -216,7 +216,7 @@ function MapShellInner() {
           />
           <GeolocateFAB
             mapRef={mapRef}
-            bottomOffset={selectedPOI ? 220 : 140}
+            bottomOffset={selectedPOI ? 220 : 20}
             onLocationFound={setUserLocation}
           />
           <FilterDrawer

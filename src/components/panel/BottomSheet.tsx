@@ -1,7 +1,7 @@
 "use client";
 
 import POIPreviewCard from "./POIPreviewCard";
-import { BOTTOM_SHEET_HEIGHT, BOTTOM_SHEET_SELECTED_HEIGHT } from "@/lib/constants";
+import { BOTTOM_SHEET_SELECTED_HEIGHT } from "@/lib/constants";
 import type { POI } from "@/types/poi";
 
 interface BottomSheetProps {
@@ -13,22 +13,18 @@ export default function BottomSheet({
   selectedPOI,
   onDeselectPOI,
 }: BottomSheetProps) {
+  if (!selectedPOI) return null;
+
   return (
     <div
       className="fixed bottom-0 left-0 right-0 z-30 rounded-t-2xl border-t border-border bg-white shadow-2xl lg:hidden"
-      style={{ height: selectedPOI ? BOTTOM_SHEET_SELECTED_HEIGHT : BOTTOM_SHEET_HEIGHT }}
+      style={{ height: BOTTOM_SHEET_SELECTED_HEIGHT }}
     >
       <div className="flex h-full flex-col px-4 pt-3 pb-4">
-        {selectedPOI ? (
-          <POIPreviewCard
-            poi={selectedPOI}
-            onClose={() => onDeselectPOI?.()}
-          />
-        ) : (
-          <div className="flex flex-1 items-center justify-center rounded-xl border-2 border-dashed border-muted-foreground/20">
-            <span className="text-xs text-muted-foreground/40">Ad Space</span>
-          </div>
-        )}
+        <POIPreviewCard
+          poi={selectedPOI}
+          onClose={() => onDeselectPOI?.()}
+        />
       </div>
     </div>
   );

@@ -168,6 +168,25 @@ export default function MapView({
     >
       <ClusterSource data={data} />
       <MapControls showGeolocate={isDesktop} />
+      {process.env.NODE_ENV === "development" && (
+        <div
+          style={{
+            position: "absolute",
+            bottom: 120,
+            right: 10,
+            background: "rgba(0,0,0,0.7)",
+            color: "#fff",
+            padding: "2px 6px",
+            borderRadius: 4,
+            fontSize: 11,
+            fontFamily: "monospace",
+            zIndex: 10,
+            pointerEvents: "none",
+          }}
+        >
+          z{viewState.zoom.toFixed(1)}
+        </div>
+      )}
       {userLocation && <UserLocationMarker location={userLocation} />}
       {selectedPOI && <SelectedPOIMarker poi={selectedPOI} />}
       {isDesktop && selectedPOI && (
