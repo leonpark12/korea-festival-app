@@ -3,6 +3,7 @@
 import { useSearchParams, useRouter, usePathname } from "next/navigation";
 import { useCallback, useRef } from "react";
 import type { FilterState } from "@/types/map";
+import { DEFAULT_CATEGORIES } from "@/lib/categories";
 
 export function useQueryParams(): {
   filters: FilterState;
@@ -19,7 +20,7 @@ export function useQueryParams(): {
   searchParamsRef.current = searchParams;
 
   const filters: FilterState = {
-    categories: searchParams.get("cat")?.split(",").filter(Boolean) ?? [],
+    categories: searchParams.get("cat")?.split(",").filter(Boolean) ?? DEFAULT_CATEGORIES,
     region: searchParams.get("region") ?? null,
     query: searchParams.get("q") ?? "",
     selectedPOI: searchParams.get("poi") ?? null,

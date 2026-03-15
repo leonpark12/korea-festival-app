@@ -5,8 +5,9 @@ import {
   clusterCountLayer,
   unclusteredPointLayer,
   poiLabelLayer,
+  sparseLabelLayer,
 } from "./map-layers";
-import { CLUSTER_MAX_ZOOM, CLUSTER_RADIUS } from "@/lib/constants";
+import { CLUSTER_MAX_ZOOM, CLUSTER_RADIUS, SPARSE_THRESHOLD } from "@/lib/constants";
 import type { POIGeoJSON } from "@/types/poi";
 
 interface ClusterSourceProps {
@@ -22,8 +23,16 @@ export default memo(function ClusterSource({ data }: ClusterSourceProps) {
     [data]
   );
 
-  // key를 사용하여 cluster 모드 전환 시 Source를 강제 재생성
-  // MapLibre는 기존 source의 cluster 설정을 동적으로 변경할 수 없음
+  // 희소 데이터 판단: 서버 힌트 우선, 폴백으로 feature 개수 확인
+  const isSparse = useMemo(
+    () =>
+      !isServerClustered &&
+      (data.metadata?.sparse === true ||
+        data.features.length < SPARSE_THRESHOLD),
+    [data, isServerClustered]
+  );
+
+  // 서버사이드 region 클러스터 모드
   if (isServerClustered) {
     return (
       <Source
@@ -39,6 +48,23 @@ export default memo(function ClusterSource({ data }: ClusterSourceProps) {
     );
   }
 
+  // 희소 데이터: 클러스터링 없이 개별 마커 + 라벨만 표시
+  if (isSparse) {
+    return (
+      <Source
+        key="sparse-points"
+        id="pois"
+        type="geojson"
+        data={data}
+        cluster={false}
+      >
+        <Layer {...unclusteredPointLayer} />
+        <Layer {...sparseLabelLayer} />
+      </Source>
+    );
+  }
+
+  // 밀집 데이터: MapLibre 네이티브 클러스터링
   return (
     <Source
       key="native-clusters"

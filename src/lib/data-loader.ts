@@ -140,11 +140,40 @@ export async function getAllSlugs(locale: string): Promise<string[]> {
   return docs.map((doc) => doc.slug as string);
 }
 
-export async function getGeoJSON(locale: string): Promise<POIGeoJSON> {
+/**
+ * 필터 적용 후 총 개수 조회 (인덱스 스캔으로 빠름)
+ */
+export async function getFilteredCount(
+  locale: string,
+  filters?: { categories?: string[]; region?: string }
+): Promise<number> {
   const db = await getDb();
+  const query: Document = {};
+  if (filters?.categories?.length) {
+    query.appCategory = { $in: filters.categories };
+  }
+  if (filters?.region) {
+    query.region = filters.region;
+  }
+  return db.collection(collectionName(locale)).countDocuments(query);
+}
+
+export async function getGeoJSON(
+  locale: string,
+  filters?: { categories?: string[]; region?: string }
+): Promise<POIGeoJSON> {
+  const db = await getDb();
+  const query: Document = {};
+  if (filters?.categories?.length) {
+    query.appCategory = { $in: filters.categories };
+  }
+  if (filters?.region) {
+    query.region = filters.region;
+  }
+
   const docs = await db
     .collection(collectionName(locale))
-    .find({}, { projection: SUMMARY_PROJECTION })
+    .find(query, { projection: SUMMARY_PROJECTION })
     .toArray();
 
   return {

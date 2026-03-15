@@ -58,6 +58,10 @@ export const CATEGORIES: CategoryMeta[] = [
   },
 ];
 
+export const DEFAULT_CATEGORIES: Category[] = [
+  "attraction", "festival", "culture", "nature", "leisure",
+];
+
 export const CATEGORY_MAP = Object.fromEntries(
   CATEGORIES.map((c) => [c.id, c])
 ) as Record<Category, CategoryMeta>;

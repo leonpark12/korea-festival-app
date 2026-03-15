@@ -10,6 +10,7 @@ export const MAP_STYLE = "https://tiles.openfreemap.org/styles/positron";
 
 export const CLUSTER_MAX_ZOOM = 12;
 export const CLUSTER_RADIUS = 40;
+export const SPARSE_THRESHOLD = 150;
 
 export const BREAKPOINTS = {
   sm: 640,

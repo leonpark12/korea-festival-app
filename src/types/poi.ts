@@ -270,6 +270,10 @@ export interface POIGeoJSONProperties {
 export interface POIGeoJSON {
   type: "FeatureCollection";
   features: POIFeature[];
+  metadata?: {
+    totalCount: number;
+    sparse: boolean;
+  };
 }
 
 export interface POIFeature {
