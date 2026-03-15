@@ -6,6 +6,19 @@
 
 ## [Unreleased]
 
+### Added
+- **Sparse 모드 name 라벨**: 150개 미만 희소 데이터에서 모든 줌 레벨(zoom 7~)에서 마커 위에 POI 이름 표시
+  - `sparseLabelLayer` 추가 (`minzoom` 없음, `text-allow-overlap: false`로 겹침 자동 숨김)
+  - dense 모드의 `poiLabelLayer`(minzoom: 13)는 기존 동작 유지
+- **Sparse 데이터 클러스터링 개선**: 필터 적용 후 150개 미만이면 region 클러스터 건너뛰고 개별 마커 직접 표시
+  - `getFilteredCount()`: 필터 적용 후 카운트 조회 (인덱스 스캔)
+  - `getGeoJSON()`: 필터 파라미터 지원 추가
+  - GeoJSON API: `metadata.sparse` 힌트로 클라이언트에 희소 여부 전달
+  - `SPARSE_THRESHOLD` 상수 (150) 추가
+- **기본 카테고리 필터**: 초기 접속 시 5개 카테고리(관광지, 축제, 문화, 자연, 레저) 자동 선택
+  - `DEFAULT_CATEGORIES` 상수 추가
+  - 카테고리 0개 선택 방지 (최소 1개 유지)
+
 ### Changed
 - **모바일 바텀시트 광고 영역 제거**: POI 미선택 시 빈 광고 자리표시자 대신 바텀시트 자체를 숨김 처리
   - 지도 하단 패딩 및 GeolocateFAB 오프셋 조정

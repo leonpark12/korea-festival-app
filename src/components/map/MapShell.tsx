@@ -13,6 +13,7 @@ import { useQueryParams } from "@/hooks/useQueryParams";
 import { usePOISearch } from "@/hooks/usePOISearch";
 import { useIsDesktop } from "@/hooks/useMediaQuery";
 import { KOREA_CENTER, BOTTOM_SHEET_HEIGHT } from "@/lib/constants";
+import { DEFAULT_CATEGORIES } from "@/lib/categories";
 import type { MapViewState, UserLocation } from "@/types/map";
 import type { POI, POISummary } from "@/types/poi";
 import type { MapRef } from "react-map-gl/maplibre";
@@ -120,6 +121,7 @@ function MapShellInner() {
       const next = current.includes(cat)
         ? current.filter((c) => c !== cat)
         : [...current, cat];
+      if (next.length === 0) return; // 최소 1개 카테고리 유지
       setFilter("categories", next);
     },
     [filters.categories, setFilter]
@@ -138,7 +140,7 @@ function MapShellInner() {
   );
 
   const clearFilters = useCallback(() => {
-    setFilter("categories", []);
+    setFilter("categories", DEFAULT_CATEGORIES);
     setFilter("region", null);
   }, [setFilter]);
 
