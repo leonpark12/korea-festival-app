@@ -6,6 +6,9 @@
 
 ## [Unreleased]
 
+### Fixed
+- **POI 상세 description 줄넘김 처리**: `renderHtmlText()`에서 `\n` 문자도 줄넘김으로 처리하도록 수정 (기존 `<br>` 태그만 처리)
+
 ### Added
 - **Sparse 모드 name 라벨**: 150개 미만 희소 데이터에서 모든 줌 레벨(zoom 7~)에서 마커 위에 POI 이름 표시
   - `sparseLabelLayer` 추가 (`minzoom` 없음, `text-allow-overlap: false`로 겹침 자동 숨김)

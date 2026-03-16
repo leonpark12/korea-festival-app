@@ -7,7 +7,7 @@ interface SpotInfoProps {
 
 /** HTML 문자열에서 <br> 태그를 줄바꿈으로 변환하고 나머지 태그는 제거한다. */
 function renderHtmlText(html: string) {
-  const parts = html.split(/<br\s*\/?>/gi);
+  const parts = html.split(/<br\s*\/?>|\n/gi);
   return parts.map((part, i) => {
     const text = part.replace(/<[^>]+>/g, "").trim();
     if (!text) return null;
